@@ -1,0 +1,14 @@
+{% extends "coffee/base.html" %}
+{% load static %}
+{% block content %}
+<section class="hero" style="background-image: url('{% static 'img/hero.jpg' %}');">
+  <div class="hero-overlay"></div>
+
+  <div class="hero-text">
+    <p class="eyebrow">Welcome to</p>
+    <h1>Your Café Name</h1>
+    <p class="tagline">Slow down, breathe, and enjoy something warm.</p>
+    <a class="btn" href="{% url 'categories' %}">Explore the Menu</a>
+    <a class="btn btn-ghost" href="{% url 'about' %}">About us</a>
+  </div>
+</section>{% endblock %}

@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Café{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <script>
+    (function () {
+      const DARK_FROM = 19, DARK_TO = 6, OVERRIDE_HOURS = 12;
+
+      window.themeByTime = function () {
+        const h = new Date().getHours();
+        return (h >= DARK_FROM || h < DARK_TO) ? "dark" : "light";
+      };
+
+      window.currentTheme = function () {
+        try {
+          const o = JSON.parse(localStorage.getItem("themeOverride"));
+          if (o && Date.now() - o.at < OVERRIDE_HOURS * 3600 * 1000) return o.theme;
+        } catch (e) {}
+        return window.themeByTime();
+      };
+
+      document.documentElement.dataset.theme = window.currentTheme();
+    })();
+  </script>
+</head>
+
+<body>
+  {% if request.resolver_match.url_name != "welcome" %}
+  <nav class="navbar">
+    <a class="brand" href="{% url 'welcome' %}">☕ Café</a>
+
+    <div class="nav-links">
+      {% for c in nav_categories %}
+      <a href="{% url 'category_detail' c.slug %}"
+         class="{% if request.path == c.get_absolute_url %}active{% endif %}">{{ c.name }}</a>
+      {% endfor %}
+      <a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a>
+    </div>
+
+    <form class="search" action="{% url 'search' %}" method="get">
+      <input type="search" name="q" placeholder="Search the menu…" value="{{ query|default:'' }}">
+    </form>
+
+    <button id="theme-toggle" aria-label="Toggle evening mode">🌙</button>
+  </nav>
+  {% else %}
+  <button id="theme-toggle" class="floating" aria-label="Toggle evening mode">🌙</button>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+
+  <script src="{% static 'js/theme.js' %}"></script>
+</body>
+</html>

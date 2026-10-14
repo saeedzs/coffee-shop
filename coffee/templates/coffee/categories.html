@@ -1,0 +1,34 @@
+{% extends "coffee/base.html" %}
+{% block content %}
+<header class="page-header">
+  <a class="back" href="{% url 'welcome' %}">← Home</a>
+  <h2>Our Menu</h2>
+  <p>Choose a category</p>
+</header>
+
+{% if pick %}
+<section class="pick">
+  <img src="{{ pick.image.url }}" alt="{{ pick.name }}">
+  <div class="pick-text">
+    <span class="tag">☕ Barista's pick today</span>
+    <h3>{{ pick.name }}</h3>
+    <p class="ingredients">{{ pick.ingredients }}</p>
+    {% if pick_note %}<p class="note">“{{ pick_note }}”</p>{% endif %}
+    <p class="price">${{ pick.price }}</p>
+    <a class="btn-small" href="{% url 'category_detail' pick.category.slug %}">See in {{ pick.category.name }}</a>
+  </div>
+</section>
+{% endif %}
+
+<div class="grid categories">
+  {% for c in categories %}
+  <a class="category-card" href="{% url 'category_detail' c.slug %}">
+    <img src="{{ c.image.url }}" alt="{{ c.name }}">
+    <div class="overlay">
+      <h3>{{ c.name }}</h3>
+      <span>{{ c.description }}</span>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "coffee/base.html" %}
+{% block title %}Search{% endblock %}
+{% block content %}
+<header class="page-header">
+  <h2>{% if query %}Results for "{{ query }}"{% else %}Search the menu{% endif %}</h2>
+</header>
+
+<div class="grid products">
+  {% for p in products %}
+  <article class="product-card">
+    <img src="{{ p.image.url }}" alt="{{ p.name }}">
+    <div class="info">
+      <small class="tag">{{ p.category.name }}</small>
+      <h3>{{ p.name }}</h3>
+      <p class="ingredients">{{ p.ingredients }}</p>
+      <p class="price">${{ p.price }}</p>
+    </div>
+  </article>
+  {% empty %}
+  <p class="empty">{% if query %}Nothing found. Try another word, like "milk" or "mint".{% else %}Type a drink, cake, or ingredient above.{% endif %}</p>
+  {% endfor %}
+</div>
+{% endblock %}

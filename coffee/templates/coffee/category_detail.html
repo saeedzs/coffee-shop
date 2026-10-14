@@ -1,0 +1,24 @@
+{% extends "coffee/base.html" %}
+{% block title %}{{ category.name }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <a class="back" href="{% url 'categories' %}">← All categories</a>
+  <h2>{{ category.name }}</h2>
+</header>
+
+<div class="grid products">
+  {% for p in products %}
+  <article class="product-card">
+    {% if p.id == pick_id %}<span class="ribbon">★ Barista's pick</span>{% endif %}
+    <img src="{{ p.image.url }}" alt="{{ p.name }}">
+    <div class="info">
+      <h3>{{ p.name }}</h3>
+      <p class="ingredients">{{ p.ingredients }}</p>
+      <p class="price">${{ p.price }}</p>
+    </div>
+  </article>
+  {% empty %}
+  <p class="empty">Nothing here yet, check back soon.</p>
+  {% endfor %}
+</div>
+{% endblock %}

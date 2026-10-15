@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.db.models import Q
 from django.utils import timezone
-from .models import Product,ShopInfo, OpeningHour
+from .models import Product,ShopInfo
 from .models import DailyPick
 
 # Create your views here.
@@ -32,28 +32,11 @@ def search(request):
     return render(request, "menu/search.html", {"products": products, "query": query})
 
 
-def is_open_now(hours):
-    now = timezone.localtime()
-    today = next((h for h in hours if h.day == now.weekday()), None)
-    if not today or today.closed:
-        return False
-    if today.all_day:
-        return True
-    if not today.open_time or not today.close_time:
-        return False
-    t = now.time()
-    if today.open_time <= today.close_time:
-        return today.open_time <= t <= today.close_time
-    return t >= today.open_time or t <= today.close_time   # closes after midnight
-
 def about(request):
     info = ShopInfo.load()
-    hours = list(OpeningHour.objects.all())
     return render(request, "coffee/about.html", {
         "info": info,
-        "hours": hours,
-        "open_now": is_open_now(hours),
-        "today": timezone.localtime().weekday(),
+        "open_now": info.is_open_now(),
     })
     
 

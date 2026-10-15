@@ -1,4 +1,5 @@
 from django.db import models
+import re
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.utils import timezone
@@ -61,24 +62,83 @@ class ShopInfo(models.Model):
         return self.name
 
 
-class OpeningHour(models.Model):
+import re
+from datetime import time
+from django.db import models
+from django.utils import timezone
+
+
+class ShopInfo(models.Model):
     DAYS = [(0, "Monday"), (1, "Tuesday"), (2, "Wednesday"), (3, "Thursday"),
             (4, "Friday"), (5, "Saturday"), (6, "Sunday")]
-    day = models.PositiveSmallIntegerField(choices=DAYS, unique=True)
-    all_day = models.BooleanField(default=False, help_text="Open 24 hours, no times needed")
-    open_time = models.TimeField(null=True, blank=True)
-    close_time = models.TimeField(null=True, blank=True)
-    closed = models.BooleanField(default=False)
+
+    name = models.CharField(max_length=100, default="Our Café")
+    story = models.TextField(blank=True, help_text="A short, friendly paragraph about the café")
+    photo = models.ImageField(upload_to="about/", blank=True)
+    address = models.CharField(max_length=200, blank=True)
+    phone = models.CharField(max_length=30, blank=True)
+    email = models.EmailField(blank=True)
+    instagram = models.URLField(blank=True, help_text="Full link, e.g. https://instagram.com/yourcafe")
+    telegram = models.URLField(blank=True, help_text="Full link, e.g. https://t.me/yourcafe")
+    map_embed_url = models.URLField(blank=True, help_text="Google Maps → Share → Embed a map → copy the src URL")
+
+    # Working hours
+    open_all_day = models.BooleanField(default=False, help_text="Open 24 hours (times below are ignored)")
+    open_time = models.TimeField(default=time(9, 0))
+    close_time = models.TimeField(default=time(23, 0), help_text="A time earlier than opening means it closes after midnight")
+    closed_days = models.CharField(max_length=20, blank=True)
 
     class Meta:
-        ordering = ["day"]
+        verbose_name_plural = "shop info"
 
-    def clean(self):
-        if self.all_day and self.closed:
-            raise ValidationError("A day can't be both 'closed' and 'all day'.")
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
 
     def __str__(self):
-        return self.get_day_display()
+        return self.name
+
+    @property
+    def phone_link(self):
+        return re.sub(r"[^\d+]", "", self.phone)
+
+    @property
+    def closed_day_numbers(self):
+        return {int(d) for d in self.closed_days.split(",") if d}
+
+    @property
+    def open_days_text(self):
+        closed = self.closed_day_numbers
+        names = dict(self.DAYS)
+        if not closed:
+            return "Every day"
+        if len(closed) == 7:
+            return "Closed"
+        return "Every day except " + ", ".join(names[d] for d in sorted(closed))
+
+    def is_open_now(self):
+        now = timezone.localtime()
+        today = now.weekday()
+        closed = self.closed_day_numbers
+
+        if self.open_all_day:
+            return today not in closed
+
+        t = now.time()
+        if self.open_time <= self.close_time:              # normal day, e.g. 09:00–23:00
+            return today not in closed and self.open_time <= t <= self.close_time
+
+        # Overnight, e.g. 18:00–02:00
+        if t >= self.open_time:                            # evening part belongs to today
+            return today not in closed
+        if t <= self.close_time:                           # after midnight: yesterday's session
+            return (today - 1) % 7 not in closed
+        return False
     
 
 class DailyPick(models.Model):

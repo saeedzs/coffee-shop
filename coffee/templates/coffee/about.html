@@ -1,69 +1,135 @@
 {% extends "coffee/base.html" %}
+{% load static %}
 {% block title %}About us{% endblock %}
 {% block content %}
-<header class="page-header">
-  <h2>About {{ info.name }}</h2>
-  {% if open_now %}
-    <span class="badge open">● Open now</span>
-  {% else %}
-    <span class="badge closed">● Closed right now</span>
+
+<!-- Banner -->
+<section class="about-hero" style="background-image: url('{% static 'img/hero.jpg' %}');">
+  <div class="about-hero-overlay"></div>
+  <div class="about-hero-text reveal">
+    <p class="eyebrow">Our story</p>
+    <h1>{{ info.name }}</h1>
+    <p class="hero-sub">A little corner of the day to slow down.</p>
+    <span class="status {% if open_now %}open{% else %}closed{% endif %}">
+      <span class="dot">●</span> {% if open_now %}Open now{% else %}Closed right now{% endif %}
+    </span>
+  </div>
+</section>
+
+<!-- Quick actions -->
+<nav class="quick-actions reveal" aria-label="Quick actions">
+  {% if info.phone %}
+  <a class="qa" href="tel:{{ info.phone_link }}"><span class="qa-icon">📞</span> Call</a>
   {% endif %}
-</header>
+  {% if info.address %}
+  <a class="qa" target="_blank" rel="noopener"
+     href="https://www.google.com/maps/search/?api=1&query={{ info.address|urlencode }}"><span class="qa-icon">📍</span> Directions</a>
+  {% endif %}
+  {% if info.instagram %}
+  <a class="qa" href="{{ info.instagram }}" target="_blank" rel="noopener">
+    <img src="{% static 'img/instagram.png' %}" alt=""> Instagram</a>
+  {% endif %}
+  {% if info.telegram %}
+  <a class="qa" href="{{ info.telegram }}" target="_blank" rel="noopener">
+    <img class="icon-mono" src="{% static 'img/delivery.png' %}" alt=""> Telegram</a>
+  {% endif %}
+  <a class="qa" href="{% url 'categories' %}"><span class="qa-icon">☕</span> Menu</a>
+</nav>
 
-<section class="about-story">
-  {% if info.photo %}<img src="{{ info.photo.url }}" alt="{{ info.name }}">{% endif %}
-  <p>{{ info.story|linebreaksbr }}</p>
+<!-- Story -->
+<section class="story">
+  <div class="story-photo reveal">
+    <img src="{% if info.photo %}{{ info.photo.url }}{% else %}{% static 'img/hero.jpg' %}{% endif %}"
+         alt="{{ info.name }}">
+  </div>
+  <div class="story-text reveal">
+    <h2>Welcome in</h2>
+    <p>{{ info.story|default:"Fresh coffee, homemade cakes and a calm place to sit. Take your time, we're happy to have you."|linebreaksbr }}</p>
+  </div>
 </section>
 
-<div class="grid about-grid">
+<!-- Highlights (edit the wording to fit your café) -->
+<section class="highlights">
+  <div class="highlight reveal"><span>☕</span><h3>Freshly brewed</h3><p>Every cup made to order, just for you.</p></div>
+  <div class="highlight reveal"><span>🍰</span><h3>Baked with care</h3><p>Cakes and sweets made from simple ingredients.</p></div>
+  <div class="highlight reveal"><span>🌿</span><h3>Cozy &amp; calm</h3><p>A quiet corner to read, work or catch up.</p></div>
+</section>
 
-  <div class="info-card">
-    <h3>Find us</h3>
-    {% if info.address %}
-      <p>📍 {{ info.address }}</p>
-      <a class="btn-small" target="_blank" rel="noopener"
-         href="https://www.google.com/maps/search/?api=1&query={{ info.address|urlencode }}">Get directions</a>
-    {% endif %}
-    {% if info.phone %}
-      <p>📞 <a href="tel:{{ info.phone }}">{{ info.phone }}</a></p>
-    {% endif %}
-    {% if info.email %}
-      <p>✉️ <a href="mailto:{{ info.email }}">{{ info.email }}</a></p>
-    {% endif %}
-  </div>
+<!-- Visit -->
+<section class="visit">
+  <h2 class="section-title reveal">Come say hello</h2>
+  <div class="visit-grid">
 
-  <div class="info-card">
-    <h3>Opening hours
-        {% if open_now %}<span class="badge open">● Open now</span>
-        {% else %}<span class="badge closed">● Closed</span>{% endif %}
-    </h3>    
-    <table class="hours">
-      {% for h in hours %}
-      <tr class="{% if h.day == today %}today{% endif %}">
-        <td>{{ h.get_day_display }}</td>
-        <td>
-            {% if h.all_day %}Open all day
-            {% elif h.closed or not h.open_time %}Closed
-            {% else %}{{ h.open_time|time:"H:i" }} – {{ h.close_time|time:"H:i" }}{% endif %}
-        </td>
-                </tr>
-      {% endfor %}
-    </table>
-  </div>
+    <div class="visit-card reveal">
+      {% if info.address %}
+      <div class="v-row">
+        <div class="v-icon">📍</div>
+        <div>
+          <div class="v-label">Address</div>
+          {{ info.address }}
+        </div>
+      </div>
+      {% endif %}
 
-  <div class="info-card">
-    <h3>Follow us</h3>
-    <div class="socials">
-      {% if info.instagram %}<a class="social" href="{{ info.instagram }}" target="_blank" rel="noopener">📸 Instagram</a>{% endif %}
-      {% if info.telegram %}<a class="social" href="{{ info.telegram }}" target="_blank" rel="noopener">✈️ Telegram</a>{% endif %}
+      {% if info.phone %}
+      <div class="v-row">
+        <div class="v-icon">📞</div>
+        <div>
+          <div class="v-label">Phone</div>
+          <a href="tel:{{ info.phone_link }}">{{ info.phone }}</a>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if info.email %}
+      <div class="v-row">
+        <div class="v-icon">✉️</div>
+        <div>
+          <div class="v-label">Email</div>
+          <a href="mailto:{{ info.email }}">{{ info.email }}</a>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="v-row">
+        <div class="v-icon">🕘</div>
+        <div>
+          <div class="v-label">Opening hours</div>
+          <strong>{{ info.open_days_text }}</strong><br>
+          {% if info.open_all_day %}Open 24 hours{% else %}{{ info.open_time|time:"g:i A" }} – {{ info.close_time|time:"g:i A" }}{% endif %}
+          <div class="v-badge">
+            {% if open_now %}<span class="badge open">● Open now</span>
+            {% else %}<span class="badge closed">● Closed right now</span>{% endif %}
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-{% if info.map_embed_url %}
-<section class="map">
-  <iframe src="{{ info.map_embed_url }}" loading="lazy" allowfullscreen
-          referrerpolicy="no-referrer-when-downgrade" title="Map"></iframe>
+    {% if info.map_embed_url %}
+    <div class="visit-map reveal">
+      <iframe src="{{ info.map_embed_url }}" loading="lazy" allowfullscreen
+              referrerpolicy="no-referrer-when-downgrade" title="Map"></iframe>
+    </div>
+    {% endif %}
+  </div>
 </section>
-{% endif %}
+
+<!-- Closing call to action -->
+<section class="about-cta reveal">
+  <h2>Your table is waiting</h2>
+  <p>Have a look at what we're serving today.</p>
+  <a class="btn-solid" href="{% url 'categories' %}">Browse the menu</a>
+</section>
+
+<script>
+  // Fade sections in as they scroll into view
+  const items = document.querySelectorAll(".reveal");
+  items.forEach(el => el.classList.add("hidden"));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.remove("hidden"); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  items.forEach(el => io.observe(el));
+</script>
 {% endblock %}

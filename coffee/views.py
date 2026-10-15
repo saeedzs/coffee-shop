@@ -14,21 +14,39 @@ def welcome(request):
 def categories(request):
     return render(request, "coffee/categories.html", {"categories": Category.objects.all()})
 
+DIET_FILTERS = {
+    "vegan": {"is_vegan": True},
+    "caffeine_free": {"is_caffeine_free": True},
+}
+
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
-    products = category.products.filter(available=True)
-    return render(request, "coffee/category_detail.html",
-                  {"category": category, "products": products})
+    products = category.products.all()
+
+    active_diet = request.GET.get("diet")
+    if active_diet in DIET_FILTERS:
+        products = products.filter(**DIET_FILTERS[active_diet])
+    else:
+        active_diet = None
+
+    products = products.order_by("-available", "id")      # sold-out items sink to the bottom
+    pick, _ = todays_pick()
+    return render(request, "coffee/category_detail.html", {
+        "category": category,
+        "products": products,
+        "pick_id": pick.id if pick else None,
+        "active_diet": active_diet,
+    })
     
 def search(request):
     query = request.GET.get("q", "").strip()
     products = Product.objects.none()
     if query:
-        products = Product.objects.filter(available=True).filter(
+        products = Product.objects.filter(
             Q(name__icontains=query) |
             Q(ingredients__icontains=query) |
             Q(category__name__icontains=query)
-        ).select_related("category")
+        ).select_related("category").order_by("-available", "name")
     return render(request, "menu/search.html", {"products": products, "query": query})
 
 

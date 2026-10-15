@@ -6,19 +6,19 @@
   <h2>{{ category.name }}</h2>
 </header>
 
+<div class="filters">
+  <a class="chip-filter {% if not active_diet %}active{% endif %}" href="{% url 'category_detail' category.slug %}">All</a>
+  <a class="chip-filter {% if active_diet == 'vegan' %}active{% endif %}" href="?diet=vegan">🌱 Vegan</a>
+  <a class="chip-filter {% if active_diet == 'caffeine_free' %}active{% endif %}" href="?diet=caffeine_free">💤 Caffeine-free</a>
+</div>
+
 <div class="grid products">
   {% for p in products %}
-  <article class="product-card">
-    {% if p.id == pick_id %}<span class="ribbon">★ Barista's pick</span>{% endif %}
-    <img src="{{ p.image.url }}" alt="{{ p.name }}">
-    <div class="info">
-      <h3>{{ p.name }}</h3>
-      <p class="ingredients">{{ p.ingredients }}</p>
-      <p class="price">${{ p.price }}</p>
-    </div>
-  </article>
+    {% include "coffee/_product_card.html" %}
   {% empty %}
-    <p class="empty">Nothing here yet, check back soon.</p>
+  <p class="empty">{% if active_diet %}Nothing matches this filter in {{ category.name }}.{% else %}Nothing here yet, check back soon.{% endif %}</p>
   {% endfor %}
 </div>
+
+<p class="allergy-note">Allergic or unsure? Please ask our staff before ordering, as recipes can change.</p>
 {% endblock %}

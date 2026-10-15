@@ -1,0 +1,26 @@
+<article class="product-card {% if not p.available %}sold-out{% endif %}">
+  {% if p.id == pick_id %}<span class="ribbon">★ Barista's pick</span>{% endif %}
+  {% if p.badge %}<span class="pbadge pbadge-{{ p.badge }}">{{ p.get_badge_display }}</span>{% endif %}
+
+  <div class="img-wrap">
+    <img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy" decoding="async">
+    {% if not p.available %}<span class="soldout-label">Sold out today</span>{% endif %}
+  </div>
+
+  <div class="info">
+    {% if show_category %}<small class="tag">{{ p.category.name }}</small>{% endif %}
+    <h3>{{ p.name }}</h3>
+    <p class="ingredients">{{ p.ingredients }}</p>
+
+    {% if p.is_vegan or p.is_caffeine_free or p.has_nuts or p.has_dairy %}
+    <div class="diet">
+      {% if p.is_vegan %}<span class="chip good">🌱 Vegan</span>{% endif %}
+      {% if p.is_caffeine_free %}<span class="chip good">💤 Caffeine-free</span>{% endif %}
+      {% if p.has_nuts %}<span class="chip warn">🥜 Contains nuts</span>{% endif %}
+      {% if p.has_dairy %}<span class="chip warn">🥛 Contains dairy</span>{% endif %}
+    </div>
+    {% endif %}
+
+    {% include "coffee/_prices.html" %}
+  </div>
+</article>

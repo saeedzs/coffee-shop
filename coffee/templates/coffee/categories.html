@@ -14,7 +14,7 @@
     <h3>{{ pick.name }}</h3>
     <p class="ingredients">{{ pick.ingredients }}</p>
     {% if pick_note %}<p class="note">“{{ pick_note }}”</p>{% endif %}
-    <p class="price">${{ pick.price }}</p>
+    {% include "coffee/_prices.html" with p=pick %}
     <a class="btn-small" href="{% url 'category_detail' pick.category.slug %}">See in {{ pick.category.name }}</a>
   </div>
 </section>

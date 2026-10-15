@@ -1,0 +1,8 @@
+<div class="prices">
+  {% if p.price_large %}
+    <span class="size"><small>Medium</small>${{ p.price }}</span>
+    <span class="size"><small>Large</small>${{ p.price_large }}</span>
+  {% else %}
+    <span class="price">${{ p.price }}</span>
+  {% endif %}
+</div>

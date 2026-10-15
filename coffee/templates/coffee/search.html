@@ -7,15 +7,7 @@
 
 <div class="grid products">
   {% for p in products %}
-  <article class="product-card">
-    <img src="{{ p.image.url }}" alt="{{ p.name }}">
-    <div class="info">
-      <small class="tag">{{ p.category.name }}</small>
-      <h3>{{ p.name }}</h3>
-      <p class="ingredients">{{ p.ingredients }}</p>
-      <p class="price">${{ p.price }}</p>
-    </div>
-  </article>
+  {% include "coffee/_product_card.html" with show_category=True %}
   {% empty %}
   <p class="empty">{% if query %}Nothing found. Try another word, like "milk" or "mint".{% else %}Type a drink, cake, or ingredient above.{% endif %}</p>
   {% endfor %}

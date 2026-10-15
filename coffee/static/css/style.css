@@ -370,3 +370,51 @@ body::before {
 @media (max-width: 1100px) { .grid.products { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 800px)  { .grid.products { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 500px)  { .grid.products { grid-template-columns: 1fr; } }
+
+/* Prices with sizes */
+.prices { display: flex; flex-wrap: wrap; gap: 1.2rem; align-items: flex-end; }
+.prices .size { color: var(--sage); font-weight: 600; font-size: 1.15rem; line-height: 1.2; }
+.prices .size small {
+  display: block; font-size: .68rem; font-weight: 400;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--mocha);
+}
+
+/* Product badges (top-right; the barista's pick ribbon stays top-left) */
+.pbadge {
+  position: absolute; top: 12px; right: 12px; z-index: 1;
+  padding: .25rem .8rem; border-radius: 999px;
+  font-size: .78rem; font-weight: 600; color: #fff;
+}
+.pbadge-new      { background: #4f8a8b; }
+.pbadge-popular  { background: #c8643c; }
+.pbadge-seasonal { background: #d49a3a; }
+
+/* Sold out */
+.img-wrap { position: relative; }
+.sold-out img { filter: grayscale(1); opacity: .55; }
+.sold-out .info { opacity: .6; }
+.soldout-label {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: rgba(30, 18, 10, .82); color: #faf5ec;
+  padding: .4rem 1.1rem; border-radius: 999px;
+  font-size: .85rem; letter-spacing: .05em; white-space: nowrap;
+}
+
+/* Dietary chips */
+.diet { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .9rem; }
+.chip { padding: .15rem .65rem; border-radius: 999px; font-size: .75rem; }
+.chip.good { background: color-mix(in srgb, var(--sage) 22%, transparent); color: var(--sage); }
+.chip.warn { background: color-mix(in srgb, #d49a3a 22%, transparent); color: #a9741a; }
+:root[data-theme="dark"] .chip.warn { color: #e8b866; }
+
+/* Filter buttons */
+.filters { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; padding: 0 1rem 1.2rem; }
+.chip-filter {
+  padding: .45rem 1.1rem; border-radius: 999px; font-size: .92rem;
+  border: 1px solid var(--latte); background: var(--card); color: var(--mocha);
+  transition: all .3s;
+}
+.chip-filter:hover { border-color: var(--sage); }
+.chip-filter.active { background: var(--espresso); color: var(--cream); border-color: var(--espresso); }
+
+.allergy-note { text-align: center; color: var(--mocha); font-size: .85rem; padding: 0 1rem 3rem; }

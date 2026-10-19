@@ -1,23 +1,19 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from django.utils import timezone
-from .models import Product,ShopInfo
-from .models import DailyPick
+from .models import Product,ShopInfo,DailyPick,Category
 
 # Create your views here.
-from django.shortcuts import render, get_object_or_404
-from .models import Category
-
-def welcome(request):
-    return render(request, "coffee/welcome.html")
-
-def categories(request):
-    return render(request, "coffee/categories.html", {"categories": Category.objects.all()})
 
 DIET_FILTERS = {
     "vegan": {"is_vegan": True},
     "caffeine_free": {"is_caffeine_free": True},
 }
+
+def welcome(request):
+    return render(request, "coffee/welcome.html")
+
+
 
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
@@ -47,7 +43,7 @@ def search(request):
             Q(ingredients__icontains=query) |
             Q(category__name__icontains=query)
         ).select_related("category").order_by("-available", "name")
-    return render(request, "menu/search.html", {"products": products, "query": query})
+    return render(request, "coffee/search.html", {"products": products, "query": query})
 
 
 def about(request):
@@ -76,11 +72,3 @@ def categories(request):
         "pick": pick, "pick_note": note,
     })
 
-def category_detail(request, slug):
-    category = get_object_or_404(Category, slug=slug)
-    products = category.products.filter(available=True)
-    pick, _ = todays_pick()
-    return render(request, "coffee/category_detail.html", {
-        "category": category, "products": products,
-        "pick_id": pick.id if pick else None,
-    })

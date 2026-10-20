@@ -1,19 +1,44 @@
 from django import forms
 from django.contrib import admin
-from .models import Category, Product, ShopInfo, DailyPick
+from django.utils.html import format_html
+
+from .models import Category, DailyPick, Product, ShopInfo
+
+admin.site.site_header = "Café admin"
+admin.site.site_title = "Café admin"
+
+
+def thumbnail(image):
+    if not image:
+        return "—"
+    return format_html('<img src="{}" style="height:44px;width:58px;object-fit:cover;border-radius:6px;">', image.url)
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ("name", "order")
+    list_display = ("photo", "name", "order", "product_count")
+    list_display_links = ("photo", "name")
+    list_editable = ("order",)
+
+    @admin.display(description="Photo")
+    def photo(self, obj):
+        return thumbnail(obj.image)
+
+    @admin.display(description="Products")
+    def product_count(self, obj):
+        return obj.products.count()
+
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("name", "category", "price", "price_large", "badge", "available")
+    list_display = ("photo", "name", "category", "price", "price_large", "badge", "available")
+    list_display_links = ("photo", "name")
     list_editable = ("badge", "available")
     list_filter = ("category", "available", "badge")
     search_fields = ("name", "ingredients")
+    ordering = ("category__order", "name")
+    list_per_page = 30
     actions = ["mark_sold_out", "mark_available"]
 
     fieldsets = (
@@ -23,6 +48,10 @@ class ProductAdmin(admin.ModelAdmin):
         ("Dietary labels", {"fields": (("is_vegan", "is_caffeine_free"), ("has_nuts", "has_dairy"))}),
     )
 
+    @admin.display(description="Photo")
+    def photo(self, obj):
+        return thumbnail(obj.image)
+
     @admin.action(description="Mark selected as SOLD OUT")
     def mark_sold_out(self, request, queryset):
         queryset.update(available=False)
@@ -31,9 +60,11 @@ class ProductAdmin(admin.ModelAdmin):
     def mark_available(self, request, queryset):
         queryset.update(available=True)
 
+
 @admin.register(DailyPick)
 class DailyPickAdmin(admin.ModelAdmin):
     list_display = ("date", "product", "note")
+    autocomplete_fields = ["product"]
 
 
 class ShopInfoForm(forms.ModelForm):
@@ -61,6 +92,12 @@ class ShopInfoForm(forms.ModelForm):
 @admin.register(ShopInfo)
 class ShopInfoAdmin(admin.ModelAdmin):
     form = ShopInfoForm
+    fieldsets = (
+        ("The café", {"fields": ("name", "story", "photo")}),
+        ("Contact", {"fields": ("address", "phone", "email")}),
+        ("Working hours", {"fields": ("open_all_day", ("open_time", "close_time"), "closed_days")}),
+        ("Social links and map", {"fields": ("instagram", "telegram", "map_embed_url")}),
+    )
 
     def has_add_permission(self, request):
         return not ShopInfo.objects.exists()

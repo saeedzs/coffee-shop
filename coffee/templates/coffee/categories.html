@@ -1,4 +1,5 @@
 {% extends "coffee/base.html" %}
+{% block title %}Our menu{% endblock %}
 {% block content %}
 <header class="page-header">
   <a class="back" href="{% url 'welcome' %}">← Home</a>
@@ -15,18 +16,19 @@
     <p class="ingredients">{{ pick.ingredients }}</p>
     {% if pick_note %}<p class="note">“{{ pick_note }}”</p>{% endif %}
     {% include "coffee/_prices.html" with p=pick %}
-    <a class="btn-small" href="{% url 'category_detail' pick.category.slug %}">See in {{ pick.category.name }}</a>
+    <a class="btn-small" href="{{ pick.category.get_absolute_url }}">See in {{ pick.category.name }}</a>
   </div>
 </section>
 {% endif %}
 
 <div class="grid categories">
   {% for c in categories %}
-  <a class="category-card" href="{% url 'category_detail' c.slug %}">
-    <img src="{{ c.image.url }}" alt="{{ c.name }}">
+  <a class="category-card {% if not c.item_count %}coming-soon{% endif %}" href="{{ c.get_absolute_url }}">
+    <img src="{{ c.image.url }}" alt="" loading="lazy" decoding="async">
     <div class="overlay">
       <h3>{{ c.name }}</h3>
       <span>{{ c.description }}</span>
+      <span class="count">{% if c.item_count %}{{ c.item_count }} item{{ c.item_count|pluralize }}{% else %}Coming soon{% endif %}</span>
     </div>
   </a>
   {% endfor %}

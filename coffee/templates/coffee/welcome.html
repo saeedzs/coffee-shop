@@ -1,14 +1,22 @@
 {% extends "coffee/base.html" %}
-{% load static %}
+{% block title %}Welcome{% endblock %}
 {% block content %}
-<section class="hero" style="background-image: url('{% static 'img/hero.jpg' %}');">
+<section class="hero">
   <div class="hero-overlay"></div>
 
   <div class="hero-text">
     <p class="eyebrow">Welcome to</p>
-    <h1>Our Café</h1>
+    <h1>{{ shop.name }}</h1>
     <p class="tagline">Slow down, breathe, and enjoy something warm.</p>
-    <a class="btn" href="{% url 'categories' %}">Explore the Menu</a>
-    <a class="btn btn-ghost" href="{% url 'about' %}">About us</a>
+    <p>
+      <span class="status {% if shop.is_open_now %}open{% else %}closed{% endif %}">
+        <span class="dot">●</span> {% if shop.is_open_now %}Open now{% else %}Closed right now{% endif %}
+      </span>
+    </p>
+    <div class="hero-actions">
+      <a class="btn" href="{% url 'categories' %}">Explore the Menu</a>
+      <a class="btn btn-ghost" href="{% url 'about' %}">About us</a>
+    </div>
   </div>
-</section>{% endblock %}
+</section>
+{% endblock %}

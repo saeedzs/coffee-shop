@@ -1,0 +1,10 @@
+{% extends "coffee/base.html" %}
+{% block title %}Page not found{% endblock %}
+{% block content %}
+<section class="not-found">
+  <p class="not-found-emoji">☕</p>
+  <h2>We couldn't find that page</h2>
+  <p>The link may be old, or the page has moved. The menu is just a tap away.</p>
+  <a class="btn-solid" href="{% url 'categories' %}">Go to the menu</a>
+</section>
+{% endblock %}

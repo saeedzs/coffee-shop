@@ -1,36 +1,37 @@
 {% extends "coffee/base.html" %}
 {% load static %}
 {% block title %}About us{% endblock %}
+{% block description %}Find {{ shop.name }}: address, opening hours, phone and social links.{% endblock %}
 {% block content %}
 
 <!-- Banner -->
-<section class="about-hero" style="background-image: url('{% static 'img/hero.jpg' %}');">
+<section class="about-hero">
   <div class="about-hero-overlay"></div>
   <div class="about-hero-text reveal">
     <p class="eyebrow">Our story</p>
-    <h1>{{ info.name }}</h1>
+    <h1>{{ shop.name }}</h1>
     <p class="hero-sub">A little corner of the day to slow down.</p>
-    <span class="status {% if open_now %}open{% else %}closed{% endif %}">
-      <span class="dot">●</span> {% if open_now %}Open now{% else %}Closed right now{% endif %}
+    <span class="status {% if shop.is_open_now %}open{% else %}closed{% endif %}">
+      <span class="dot">●</span> {% if shop.is_open_now %}Open now{% else %}Closed right now{% endif %}
     </span>
   </div>
 </section>
 
 <!-- Quick actions -->
 <nav class="quick-actions reveal" aria-label="Quick actions">
-  {% if info.phone %}
-  <a class="qa" href="tel:{{ info.phone_link }}"><span class="qa-icon">📞</span> Call</a>
+  {% if shop.phone %}
+  <a class="qa" href="tel:{{ shop.phone_link }}"><span class="qa-icon">📞</span> Call</a>
   {% endif %}
-  {% if info.address %}
+  {% if shop.address %}
   <a class="qa" target="_blank" rel="noopener"
-     href="https://www.google.com/maps/search/?api=1&query={{ info.address|urlencode }}"><span class="qa-icon">📍</span> Directions</a>
+     href="https://www.google.com/maps/search/?api=1&query={{ shop.address|urlencode }}"><span class="qa-icon">📍</span> Directions</a>
   {% endif %}
-  {% if info.instagram %}
-  <a class="qa" href="{{ info.instagram }}" target="_blank" rel="noopener">
+  {% if shop.instagram %}
+  <a class="qa" href="{{ shop.instagram }}" target="_blank" rel="noopener">
     <img src="{% static 'img/instagram.png' %}" alt=""> Instagram</a>
   {% endif %}
-  {% if info.telegram %}
-  <a class="qa" href="{{ info.telegram }}" target="_blank" rel="noopener">
+  {% if shop.telegram %}
+  <a class="qa" href="{{ shop.telegram }}" target="_blank" rel="noopener">
     <img class="icon-mono" src="{% static 'img/delivery.png' %}" alt=""> Telegram</a>
   {% endif %}
   <a class="qa" href="{% url 'categories' %}"><span class="qa-icon">☕</span> Menu</a>
@@ -39,12 +40,12 @@
 <!-- Story -->
 <section class="story">
   <div class="story-photo reveal">
-    <img src="{% if info.photo %}{{ info.photo.url }}{% else %}{% static 'img/hero.jpg' %}{% endif %}"
-         alt="{{ info.name }}">
+    <img src="{% if shop.photo %}{{ shop.photo.url }}{% else %}{% static 'img/hero-small.webp' %}{% endif %}"
+         alt="{{ shop.name }}">
   </div>
   <div class="story-text reveal">
     <h2>Welcome in</h2>
-    <p>{{ info.story|default:"Fresh coffee, homemade cakes and a calm place to sit. Take your time, we're happy to have you."|linebreaksbr }}</p>
+    <p>{{ shop.story|default:"Fresh coffee, homemade cakes and a calm place to sit. Take your time, we're happy to have you."|linebreaksbr }}</p>
   </div>
 </section>
 
@@ -61,32 +62,32 @@
   <div class="visit-grid">
 
     <div class="visit-card reveal">
-      {% if info.address %}
+      {% if shop.address %}
       <div class="v-row">
         <div class="v-icon">📍</div>
         <div>
           <div class="v-label">Address</div>
-          {{ info.address }}
+          {{ shop.address }}
         </div>
       </div>
       {% endif %}
 
-      {% if info.phone %}
+      {% if shop.phone %}
       <div class="v-row">
         <div class="v-icon">📞</div>
         <div>
           <div class="v-label">Phone</div>
-          <a href="tel:{{ info.phone_link }}">{{ info.phone }}</a>
+          <a href="tel:{{ shop.phone_link }}">{{ shop.phone }}</a>
         </div>
       </div>
       {% endif %}
 
-      {% if info.email %}
+      {% if shop.email %}
       <div class="v-row">
         <div class="v-icon">✉️</div>
         <div>
           <div class="v-label">Email</div>
-          <a href="mailto:{{ info.email }}">{{ info.email }}</a>
+          <a href="mailto:{{ shop.email }}">{{ shop.email }}</a>
         </div>
       </div>
       {% endif %}
@@ -95,19 +96,19 @@
         <div class="v-icon">🕘</div>
         <div>
           <div class="v-label">Opening hours</div>
-          <strong>{{ info.open_days_text }}</strong><br>
-          {% if info.open_all_day %}Open 24 hours{% else %}{{ info.open_time|time:"g:i A" }} – {{ info.close_time|time:"g:i A" }}{% endif %}
+          <strong>{{ shop.open_days_text }}</strong><br>
+          {% if shop.open_all_day %}Open 24 hours{% else %}{{ shop.open_time|time:"g:i A" }} – {{ shop.close_time|time:"g:i A" }}{% endif %}
           <div class="v-badge">
-            {% if open_now %}<span class="badge open">● Open now</span>
+            {% if shop.is_open_now %}<span class="badge open">● Open now</span>
             {% else %}<span class="badge closed">● Closed right now</span>{% endif %}
           </div>
         </div>
       </div>
     </div>
 
-    {% if info.map_embed_url %}
+    {% if shop.map_embed_url %}
     <div class="visit-map reveal">
-      <iframe src="{{ info.map_embed_url }}" loading="lazy" allowfullscreen
+      <iframe src="{{ shop.map_embed_url }}" loading="lazy" allowfullscreen
               referrerpolicy="no-referrer-when-downgrade" title="Map"></iframe>
     </div>
     {% endif %}
@@ -132,4 +133,4 @@
   }, { threshold: 0.15 });
   items.forEach(el => io.observe(el));
 </script>
-{% endblock %}
+{% endblock %}

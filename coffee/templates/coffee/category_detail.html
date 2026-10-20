@@ -4,10 +4,11 @@
 <header class="page-header">
   <a class="back" href="{% url 'categories' %}">← All categories</a>
   <h2>{{ category.name }}</h2>
+  {% if category.description %}<p>{{ category.description }}</p>{% endif %}
 </header>
 
-<div class="filters">
-  <a class="chip-filter {% if not active_diet %}active{% endif %}" href="{% url 'category_detail' category.slug %}">All</a>
+<div class="filters" role="group" aria-label="Filter by diet">
+  <a class="chip-filter {% if not active_diet %}active{% endif %}" href="{{ category.get_absolute_url }}">All</a>
   <a class="chip-filter {% if active_diet == 'vegan' %}active{% endif %}" href="?diet=vegan">🌱 Vegan</a>
   <a class="chip-filter {% if active_diet == 'caffeine_free' %}active{% endif %}" href="?diet=caffeine_free">💤 Caffeine-free</a>
 </div>

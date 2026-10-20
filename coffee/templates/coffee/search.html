@@ -2,14 +2,21 @@
 {% block title %}Search{% endblock %}
 {% block content %}
 <header class="page-header">
-  <h2>{% if query %}Results for "{{ query }}"{% else %}Search the menu{% endif %}</h2>
+  <h2>{% if query %}Results for “{{ query }}”{% else %}Search the menu{% endif %}</h2>
+  {% if query %}<p>{{ products|length }} item{{ products|length|pluralize }} found</p>{% endif %}
 </header>
+
+{% if not query %}
+<div class="filters" aria-label="Browse by category">
+  {% for c in nav_categories %}<a class="chip-filter" href="{{ c.get_absolute_url }}">{{ c.name }}</a>{% endfor %}
+</div>
+{% endif %}
 
 <div class="grid products">
   {% for p in products %}
   {% include "coffee/_product_card.html" with show_category=True %}
   {% empty %}
-  <p class="empty">{% if query %}Nothing found. Try another word, like "milk" or "mint".{% else %}Type a drink, cake, or ingredient above.{% endif %}</p>
+  <p class="empty">{% if query %}Nothing found. Try another word, like “milk” or “mint”.{% else %}Type a drink, cake, or ingredient in the search box.{% endif %}</p>
   {% endfor %}
 </div>
 {% endblock %}

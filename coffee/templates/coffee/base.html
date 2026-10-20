@@ -4,10 +4,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Café{% endblock %}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+  <title>{% block title %}Menu{% endblock %} · {{ shop.name }}</title>
+  <meta name="description" content="{% block description %}Browse the {{ shop.name }} menu: coffees, cakes, teas and herbal drinks, with prices and ingredients.{% endblock %}">
+  <meta name="theme-color" content="#3b2a20">
+
+  <!-- Link preview when the menu is shared in Telegram, Instagram, WhatsApp... -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ shop.name }}">
+  <meta property="og:title" content="{% block og_title %}{{ shop.name }}{% endblock %}">
+  <meta property="og:description" content="Our menu, opening hours and how to find us.">
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/hero.webp' %}">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☕%3C/text%3E%3C/svg%3E">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/nunito-latin-400-normal.woff2' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
   <script>
+    // Runs before the page paints, so there is no light/dark flash.
     (function () {
       const DARK_FROM = 19, DARK_TO = 6, OVERRIDE_HOURS = 12;
 
@@ -29,30 +42,55 @@
   </script>
 </head>
 
-<body>
+<body class="page-{{ request.resolver_match.url_name }}">
   {% if request.resolver_match.url_name != "welcome" %}
-  <nav class="navbar">
-    <a class="brand" href="{% url 'welcome' %}">☕ Café</a>
+  <nav class="navbar" aria-label="Main">
+    <a class="brand" href="{% url 'welcome' %}">☕ {{ shop.name }}</a>
 
     <div class="nav-links">
+      <a href="{% url 'categories' %}" class="{% if request.resolver_match.url_name == 'categories' %}active{% endif %}">Menu</a>
       {% for c in nav_categories %}
-      <a href="{% url 'category_detail' c.slug %}"
+      <a href="{{ c.get_absolute_url }}"
          class="{% if request.path == c.get_absolute_url %}active{% endif %}">{{ c.name }}</a>
       {% endfor %}
       <a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a>
     </div>
 
-    <form class="search" action="{% url 'search' %}" method="get">
-      <input type="search" name="q" placeholder="Search the menu…" value="{{ query|default:'' }}">
+    <form class="search" action="{% url 'search' %}" method="get" role="search">
+      <input type="search" name="q" placeholder="Search the menu…" aria-label="Search the menu"
+             enterkeyhint="search" maxlength="60" value="{{ query|default:'' }}">
     </form>
 
-    <button id="theme-toggle" aria-label="Toggle evening mode">🌙</button>
+    <button id="theme-toggle" type="button" aria-label="Switch between day and evening mode" title="Day / evening mode">🌙</button>
   </nav>
   {% else %}
-  <button id="theme-toggle" class="floating" aria-label="Toggle evening mode">🌙</button>
+  <button id="theme-toggle" class="floating" type="button" aria-label="Switch between day and evening mode" title="Day / evening mode">🌙</button>
   {% endif %}
 
-  {% block content %}{% endblock %}
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% if request.resolver_match.url_name != "welcome" %}
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <strong>{{ shop.name }}</strong>
+        <span class="footer-status {% if shop.is_open_now %}open{% else %}closed{% endif %}">
+          ● {% if shop.is_open_now %}Open now{% else %}Closed right now{% endif %}
+        </span>
+        <p>
+          {{ shop.open_days_text }},
+          {% if shop.open_all_day %}open 24 hours{% else %}{{ shop.open_time|time:"g:i A" }} – {{ shop.close_time|time:"g:i A" }}{% endif %}
+        </p>
+      </div>
+      <div class="footer-links">
+        {% if shop.phone %}<a href="tel:{{ shop.phone_link }}">📞 {{ shop.phone }}</a>{% endif %}
+        <a href="{% url 'about' %}">📍 Find us</a>
+      </div>
+    </div>
+  </footer>
+  {% endif %}
 
   <script src="{% static 'js/theme.js' %}"></script>
 </body>

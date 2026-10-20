@@ -1,18 +1,42 @@
-from django.shortcuts import render, get_object_or_404
-from django.db.models import Q
+from django.db.models import Count, Q
+from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
-from .models import Product,ShopInfo,DailyPick,Category
 
-# Create your views here.
+from .models import Category, DailyPick, Product
 
 DIET_FILTERS = {
     "vegan": {"is_vegan": True},
     "caffeine_free": {"is_caffeine_free": True},
 }
 
+
+def todays_pick():
+    """The barista's pick: today's DailyPick if set (and in stock),
+    otherwise rotate through the available products by date."""
+    today = timezone.localdate()
+    pick = (DailyPick.objects.filter(date=today, product__available=True)
+            .select_related("product__category").first())
+    if pick:
+        return pick.product, pick.note
+
+    available = Product.objects.filter(available=True).select_related("category").order_by("id")
+    count = available.count()
+    if count:
+        return available[today.toordinal() % count], ""
+    return None, ""
+
+
 def welcome(request):
     return render(request, "coffee/welcome.html")
 
+
+def categories(request):
+    pick, note = todays_pick()
+    return render(request, "coffee/categories.html", {
+        "categories": Category.objects.annotate(item_count=Count("products")).order_by("order", "name"),
+        "pick": pick,
+        "pick_note": note,
+    })
 
 
 def category_detail(request, slug):
@@ -33,9 +57,10 @@ def category_detail(request, slug):
         "pick_id": pick.id if pick else None,
         "active_diet": active_diet,
     })
-    
+
+
 def search(request):
-    query = request.GET.get("q", "").strip()
+    query = request.GET.get("q", "").strip()[:60]
     products = Product.objects.none()
     if query:
         products = Product.objects.filter(
@@ -47,28 +72,5 @@ def search(request):
 
 
 def about(request):
-    info = ShopInfo.load()
-    return render(request, "coffee/about.html", {
-        "info": info,
-        "open_now": info.is_open_now(),
-    })
-    
-
-def todays_pick():
-    today = timezone.localdate()
-    pick = DailyPick.objects.filter(date=today).select_related("product__category").first()
-    if pick:
-        return pick.product, pick.note
-    products = list(Product.objects.filter(available=True)
-                    .select_related("category").order_by("id"))
-    if products:                       # fallback: rotate by date
-        return products[today.toordinal() % len(products)], ""
-    return None, ""
-
-def categories(request):
-    pick, note = todays_pick()
-    return render(request, "coffee/categories.html", {
-        "categories": Category.objects.all(),
-        "pick": pick, "pick_note": note,
-    })
-
+    # Shop details come from the `shop` context processor
+    return render(request, "coffee/about.html")

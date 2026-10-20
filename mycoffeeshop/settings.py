@@ -19,13 +19,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-eqxha5j@e4in$4(sse$^7tqa1txrmkwdnm=!n5cy%j&m5h9rr&'
+# Settings come from environment variables so the same code runs safely on
+# your computer (defaults below) and on a real server (set the variables).
+#   DJANGO_DEBUG=0   DJANGO_SECRET_KEY=<long random text>
+#   DJANGO_ALLOWED_HOSTS=yourcafe.com,www.yourcafe.com
+DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-eqxha5j@e4in$4(sse$^7tqa1txrmkwdnm=!n5cy%j&m5h9rr&',  # development only
+)
+if not DEBUG and SECRET_KEY.startswith('django-insecure'):
+    from django.core.exceptions import ImproperlyConfigured
+    raise ImproperlyConfigured('Set DJANGO_SECRET_KEY before running with DJANGO_DEBUG=0.')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') if h.strip()]
+if DEBUG and not ALLOWED_HOSTS:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']   # add your LAN IP here to test on a phone
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get('DJANGO_CSRF_ORIGINS', '').split(',') if o.strip()]
 
 
 # Application definition
@@ -55,14 +66,14 @@ ROOT_URLCONF = 'mycoffeeshop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'coffee.context_processors.nav_categories',
+                'coffee.context_processors.site',
             ],
         },
     },
@@ -117,6 +128,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'      # where `collectstatic` gathers files for a real server
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR / 'media'             # uploaded photos
+
+# Currency symbol shown before prices on the menu
+CURRENCY_SYMBOL = '$'
+
+# Extra protection when the site is live (DEBUG off)
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 3600          # raise to a year once you are sure HTTPS works
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

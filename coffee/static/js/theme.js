@@ -3,16 +3,20 @@ const btn = document.getElementById("theme-toggle");
 
 function apply(theme) {
   root.dataset.theme = theme;
-  btn.textContent = theme === "dark" ? "☀️" : "🌙";
+  if (btn) btn.textContent = theme === "dark" ? "☀️" : "🌙";
 }
 
 apply(currentTheme());
 
-btn.addEventListener("click", () => {
-  const next = root.dataset.theme === "dark" ? "light" : "dark";
-  localStorage.setItem("themeOverride", JSON.stringify({ theme: next, at: Date.now() }));
-  apply(next);
-});
+if (btn) {
+  btn.addEventListener("click", () => {
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    try {
+      localStorage.setItem("themeOverride", JSON.stringify({ theme: next, at: Date.now() }));
+    } catch (e) { /* storage blocked (private mode): the choice just won't be remembered */ }
+    apply(next);
+  });
+}
 
 // Re-check every minute so the switch happens live at the set hour
 setInterval(() => {

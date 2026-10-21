@@ -16,7 +16,7 @@
     <p class="ingredients">{{ pick.ingredients }}</p>
     {% if pick_note %}<p class="note">“{{ pick_note }}”</p>{% endif %}
     {% include "coffee/_prices.html" with p=pick %}
-    <a class="btn-small" href="{{ pick.category.get_absolute_url }}">See in {{ pick.category.name }}</a>
+    <a class="btn-small" href="{{ pick.category.get_absolute_url }}#p{{ pick.id }}">View details</a>
   </div>
 </section>
 {% endif %}

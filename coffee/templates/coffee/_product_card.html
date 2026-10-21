@@ -1,7 +1,6 @@
-<article class="product-card {% if not p.available %}sold-out{% endif %}">
+<article class="product-card {% if not p.available %}sold-out{% endif %}"data-product="{{ p.id }}">
   {% if p.id == pick_id %}<span class="ribbon">★ Barista's pick</span>{% endif %}
   {% if p.badge %}<span class="pbadge pbadge-{{ p.badge }}">{{ p.get_badge_display }}</span>{% endif %}
-
   <div class="img-wrap">
     <img src="{{ p.image.url }}" alt="{{ p.name }}" loading="lazy" decoding="async">
     {% if not p.available %}<span class="soldout-label">Sold out today</span>{% endif %}
@@ -9,7 +8,7 @@
 
   <div class="info">
     {% if show_category %}<small class="tag">{{ p.category.name }}</small>{% endif %}
-    <h3>{{ p.name }}</h3>
+    <h3><button type="button" class="card-open" aria-haspopup="dialog">{{ p.name }}</button></h3>
     <p class="ingredients">{{ p.ingredients }}</p>
 
     {% if p.is_vegan or p.is_caffeine_free or p.has_nuts or p.has_dairy %}

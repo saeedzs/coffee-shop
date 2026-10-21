@@ -1,0 +1,27 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/product-dialog.css' %}">
+
+<dialog id="product-dialog" class="product-dialog" aria-labelledby="pd-name">
+  <div class="pd">
+    <button type="button" class="pd-close" aria-label="Close">✕</button>
+
+    <div class="pd-media"></div>
+
+    <div class="pd-info">
+      <small class="tag pd-category"></small>
+      <h2 id="pd-name"></h2>
+      <p class="pd-ingredients"></p>
+      <div class="diet pd-diet"></div>
+      <div class="pd-prices"></div>
+      <p class="pd-note">Allergic or unsure? Please ask our staff before ordering, as recipes can change.</p>
+
+      <div class="pd-nav">
+        <button type="button" class="pd-prev" aria-label="Previous item">‹ Previous</button>
+        <span class="pd-counter" aria-live="polite"></span>
+        <button type="button" class="pd-next" aria-label="Next item">Next ›</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script src="{% static 'js/product-dialog.js' %}" defer></script>

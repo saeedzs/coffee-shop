@@ -1,0 +1,81 @@
+/* Product cards as tap targets + the product detail pop-up */
+
+/* ---- Cards ---- */
+.product-card { display: flex; flex-direction: column; cursor: pointer; }
+.product-card .info { flex: 1; display: flex; flex-direction: column; }
+.product-card .prices { margin-top: auto; }                       /* price always at the bottom: even cards */
+.product-card .ingredients {                                       /* long lists stay 2 lines; the pop-up shows all */
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+}
+
+.card-open { font: inherit; color: inherit; background: none; border: 0; padding: 0; text-align: left; cursor: pointer; }
+.card-open::after { content: ""; position: absolute; inset: 0; z-index: 2; }      /* the whole card is the tap target */
+.card-open:focus-visible { outline: none; }
+.card-open:focus-visible::after { outline: 3px solid color-mix(in srgb, var(--sage) 75%, transparent); outline-offset: -3px; border-radius: 20px; }
+
+.img-wrap { overflow: hidden; }
+.img-wrap img { transition: transform .5s ease; }
+.product-card:hover .img-wrap img { transform: scale(1.05); }
+.img-wrap::after {                                                 /* small "+" hint that the card opens */
+  content: "+"; position: absolute; right: 10px; bottom: 10px; width: 32px; height: 32px;
+  display: grid; place-items: center; border-radius: 50%; pointer-events: none;
+  background: rgba(30, 18, 10, .72); color: #fff; font-size: 1.3rem; line-height: 1;
+}
+
+/* ---- Pop-up ---- */
+html:has(dialog[open]) { overflow: hidden; }                       /* page behind does not scroll */
+
+.product-dialog {
+  margin: auto;                                   /* centers it (the site-wide margin reset removes the browser default) */
+  border: 0; padding: 0; width: min(92vw, 760px); max-height: 90vh; overflow: hidden;
+  border-radius: 24px; background: var(--card); color: var(--espresso);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .35);
+}
+.product-dialog::backdrop { background: rgba(30, 18, 10, .62); }
+.product-dialog[open] { animation: pd-in .25s ease; }
+.product-dialog[open]::backdrop { animation: pd-fade .25s ease; }
+@keyframes pd-in    { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes pd-fade  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pd-sheet { from { transform: translateY(100%); } to { transform: none; } }
+
+.pd { position: relative; display: grid; grid-template-columns: 1.1fr 1fr; max-height: 90vh; }
+.pd-close {
+  position: absolute; top: 12px; right: 12px; z-index: 5; width: 40px; height: 40px;
+  border: 0; border-radius: 50%; cursor: pointer; font-size: 1.1rem;
+  background: rgba(30, 18, 10, .72); color: #fff;
+}
+
+/* The whole photo is shown (never cropped), on a soft background */
+.pd-media { position: relative; display: flex; align-items: center; justify-content: center; min-height: 320px; background: var(--latte); }
+.pd-media img { display: block; width: 100%; height: auto; max-height: min(70vh, 640px); object-fit: contain; }
+
+.pd-info { display: flex; flex-direction: column; gap: .8rem; padding: 2rem 1.8rem 1.4rem; overflow-y: auto; }
+.pd-info h2 { font-size: 1.8rem; line-height: 1.2; }
+.pd-category:empty, .pd-diet:empty { display: none; }
+.pd-ingredients { color: var(--mocha); font-size: 1.02rem; }
+.pd-diet { margin-bottom: 0; }
+.pd-prices .prices { gap: 1.8rem; }
+.pd-prices .price { font-size: 1.6rem; }
+.pd-prices .size { font-size: 1.5rem; }
+.pd-note { font-size: .82rem; color: var(--mocha); }
+
+.pd-nav {
+  display: flex; align-items: center; justify-content: space-between; gap: .6rem;
+  margin-top: auto; padding-top: .8rem; border-top: 1px solid var(--latte);
+  font-size: .9rem; color: var(--mocha);
+}
+.pd-nav button {
+  font: inherit; padding: .45rem 1rem; border-radius: 999px; cursor: pointer;
+  background: none; border: 1px solid var(--latte); color: var(--espresso);
+}
+.pd-nav button:disabled { opacity: .35; cursor: default; }
+
+/* ---- Phones: slides up from the bottom like a sheet ---- */
+@media (max-width: 700px) {
+  .product-dialog { width: 100%; max-width: 100%; max-height: 92vh; margin: auto 0 0; border-radius: 24px 24px 0 0; }
+  .product-dialog[open] { animation-name: pd-sheet; }
+  .pd { grid-template-columns: 1fr; max-height: 92vh; overflow-y: auto; }
+  .pd-media { min-height: 0; }
+  .pd-media img { max-height: 42vh; }
+  .pd-info { overflow: visible; padding: 1.4rem 1.3rem 1.2rem; }
+}

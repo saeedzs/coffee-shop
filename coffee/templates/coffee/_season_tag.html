@@ -1,0 +1,13 @@
+{% load static %}
+{% if season_tag %}
+<link rel="stylesheet" href="{% static 'css/season-tag.css' %}">
+<div class="season-tag-wrap">
+  {% if season_tag.link_url %}<a class="season-tag" href="{{ season_tag.link_url }}">{% else %}<div class="season-tag">{% endif %}
+    <span class="season-tag-body">
+      <small>{{ season_tag.title }}</small>
+      <strong>{{ season_tag.text }}</strong>
+      {% if season_tag.note_text %}<em>{{ season_tag.note_text }}</em>{% endif %}
+    </span>
+  {% if season_tag.link_url %}</a>{% else %}</div>{% endif %}
+</div>
+{% endif %}

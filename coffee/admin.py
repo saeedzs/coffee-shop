@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Category, DailyPick, Product, ShopInfo
+from .models import Category, DailyPick, Product, SeasonalTag, ShopInfo
 
 admin.site.site_header = "Café admin"
 admin.site.site_title = "Café admin"
@@ -20,6 +20,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ("photo", "name", "order", "product_count")
     list_display_links = ("photo", "name")
     list_editable = ("order",)
+    search_fields = ("name",)
 
     @admin.display(description="Photo")
     def photo(self, obj):
@@ -104,3 +105,19 @@ class ShopInfoAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(SeasonalTag)
+class SeasonalTagAdmin(admin.ModelAdmin):
+    list_display = ("title", "text", "start_date", "end_date", "active", "showing_now")
+    list_editable = ("active",)
+    autocomplete_fields = ["product", "category"]
+    fieldsets = (
+        ("What it says", {"fields": ("title", "text", "note")}),
+        ("Where tapping it goes (optional)", {"fields": ("product", "category")}),
+        ("When it shows", {"fields": ("start_date", "end_date", "active")}),
+    )
+
+    @admin.display(description="Showing now", boolean=True)
+    def showing_now(self, obj):
+        return obj.is_showing

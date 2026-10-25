@@ -2,7 +2,7 @@ from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 
-from .models import Category, DailyPick, Product
+from .models import Category, DailyPick, Product, SeasonalTag
 
 DIET_FILTERS = {
     "vegan": {"is_vegan": True},
@@ -36,6 +36,7 @@ def categories(request):
         "categories": Category.objects.annotate(item_count=Count("products")).order_by("order", "name"),
         "pick": pick,
         "pick_note": note,
+        "season_tag": SeasonalTag.current(),
     })
 
 

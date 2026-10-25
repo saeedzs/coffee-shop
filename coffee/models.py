@@ -2,9 +2,12 @@ import re
 from datetime import time
 
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from django.utils.dateformat import time_format
+from django.utils.formats import date_format
 
 from .images import optimize_on_upload
 
@@ -176,3 +179,62 @@ class DailyPick(models.Model):
 
     def __str__(self):
         return f"{self.date}: {self.product}"
+
+
+class SeasonalTag(models.Model):
+    """The small hanging tag on the menu page: a seasonal special, a short announcement..."""
+    title = models.CharField(max_length=30, help_text="Small top line, e.g. Autumn special")
+    text = models.CharField(max_length=40, help_text="Main line, e.g. Pumpkin latte")
+    note = models.CharField(max_length=30, blank=True,
+                            help_text="Small bottom line. Leave empty to show 'until <end date>' automatically")
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL,
+                                help_text="Optional: tapping the tag opens this item")
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL,
+                                 help_text="Optional: tapping the tag opens this category (ignored if an item is chosen)")
+    start_date = models.DateField(null=True, blank=True, help_text="Leave empty to show it right away")
+    end_date = models.DateField(null=True, blank=True, help_text="Last day it is shown. Leave empty to keep it until you switch it off")
+    active = models.BooleanField(default=True, help_text="Untick to hide it without deleting")
+
+    class Meta:
+        ordering = ["-id"]
+        verbose_name = "seasonal tag"
+
+    def __str__(self):
+        return f"{self.title}: {self.text}"
+
+    def clean(self):
+        if self.start_date and self.end_date and self.end_date < self.start_date:
+            raise ValidationError("The end date can't be before the start date.")
+
+    @classmethod
+    def current(cls):
+        """The tag to show today (the newest one, if several are running), or None."""
+        today = timezone.localdate()
+        return (cls.objects.filter(active=True)
+                .filter(Q(start_date__isnull=True) | Q(start_date__lte=today))
+                .filter(Q(end_date__isnull=True) | Q(end_date__gte=today))
+                .select_related("product__category", "category")
+                .first())
+
+    @property
+    def is_showing(self):
+        today = timezone.localdate()
+        return (self.active
+                and (self.start_date is None or self.start_date <= today)
+                and (self.end_date is None or self.end_date >= today))
+
+    @property
+    def note_text(self):
+        if self.note:
+            return self.note
+        if self.end_date:
+            return "until " + date_format(self.end_date, "M j")
+        return ""
+
+    @property
+    def link_url(self):
+        if self.product_id:
+            return f"{self.product.category.get_absolute_url()}#p{self.product_id}"
+        if self.category_id:
+            return self.category.get_absolute_url()
+        return ""

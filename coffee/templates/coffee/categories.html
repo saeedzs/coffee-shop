@@ -1,6 +1,7 @@
 {% extends "coffee/base.html" %}
 {% block title %}Our menu{% endblock %}
 {% block content %}
+{% include "coffee/_season_tag.html" %}
 <header class="page-header">
   <a class="back" href="{% url 'welcome' %}">← Home</a>
   <h2>Our Menu</h2>

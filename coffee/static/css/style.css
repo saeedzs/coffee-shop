@@ -15,14 +15,20 @@
   src: url("../fonts/playfair-display-latin-600-normal.woff2") format("woff2"); }
 
 :root {
-  --cream: #faf5ec;
-  --latte: #e9dcc7;
-  --espresso: #3b2a20;
-  --mocha: #7a5a43;
-  --sage: #8a9a7b;
-  --sage-ink: #4d5f40;      /* darker sage for small text, readable on light backgrounds */
+  --cream: #fbfcf8;
+  --latte: #e8eee2;
+  --espresso: #26301f;
+  --mocha: #55654a;
+  --sage: #6f9360;
+  --sage-ink: #3f6a35;      /* darker green for small text, readable on light backgrounds */
   --card: #ffffff;
-  --ribbon: #4d5f40;        /* fixed (not themed): always sits behind white text */
+  --ribbon: #3f6a35;        /* fixed (not themed): always sits behind white text */
+
+  /* Navbar and footer: their own colour so they stand apart from the page */
+  --bar: #cde1d6;           /* background (eucalyptus green) */
+  --bar-text: #26301f;      /* brand name, active link, footer name */
+  --bar-muted: #3f5236;     /* other links and small text */
+  --bar-line: #acc9ba;      /* thin border line */
 }
 :root[data-theme="dark"] {
   --cream: #1f1814;
@@ -32,6 +38,11 @@
   --sage: #a9bb98;
   --sage-ink: #a9bb98;
   --card: #2a201a;
+
+  --bar: #2b211b;
+  --bar-text: #f0e6d8;
+  --bar-muted: #c9a98a;
+  --bar-line: #3b2e25;
 }
 
 /* ---------- 2. Base ---------- */
@@ -59,7 +70,7 @@ body::before {
   content: "";
   position: fixed; inset: 0; z-index: -1;
   background: url("../img/hero.webp") center / cover no-repeat;
-  opacity: .20;
+  opacity: .25;                                 /* day mode: how visible the photo is (0 = hidden, .4 = strong) */
   transition: opacity .4s;
 }
 :root[data-theme="dark"] body::before { opacity: .40; }
@@ -75,14 +86,13 @@ body::before {
   position: sticky; top: 0; z-index: 100;
   display: flex; align-items: center; gap: 1.2rem;
   padding: .8rem 5%;
-  background: color-mix(in srgb, var(--cream) 85%, transparent);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--latte);
+  background: var(--bar);                       /* solid, so text behind it never looks blurry */
+  border-bottom: 1px solid var(--bar-line);
 }
-.brand { font-family: "Playfair Display", Georgia, serif; font-size: 1.3rem; white-space: nowrap; }
+.brand { font-family: "Playfair Display", Georgia, serif; font-size: 1.3rem; white-space: nowrap; color: var(--bar-text); }
 .nav-links { display: flex; gap: 1.2rem; flex: 1; overflow-x: auto; white-space: nowrap; }
-.nav-links a { padding: .3rem .2rem; border-bottom: 2px solid transparent; color: var(--mocha); }
-.nav-links a:hover, .nav-links a.active { color: var(--espresso); border-color: var(--sage); }
+.nav-links a { padding: .3rem .2rem; border-bottom: 2px solid transparent; color: var(--bar-muted); }
+.nav-links a:hover, .nav-links a.active { color: var(--bar-text); border-color: currentColor; }
 
 .search input {
   padding: .5rem 1rem; border-radius: 999px; font: inherit; font-size: .95rem;
@@ -91,14 +101,6 @@ body::before {
 }
 .search input:focus { width: 260px; outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--sage) 40%, transparent); }
 
-#theme-toggle {
-  background: none; border: 1px solid var(--latte); border-radius: 50%;
-  width: 40px; height: 40px; cursor: pointer; font-size: 1.1rem; flex-shrink: 0;
-}
-#theme-toggle.floating {
-  position: fixed; top: 1rem; right: 1rem; z-index: 100;
-  background: rgba(250, 245, 236, .85); border-color: transparent; backdrop-filter: blur(6px);
-}
 
 /* ---------- 4. Welcome page ---------- */
 .hero, .about-hero {
@@ -301,16 +303,16 @@ body::before {
 .about-cta p { color: var(--mocha); margin-bottom: 1.5rem; }
 
 /* ---------- 8. Footer & 404 ---------- */
-.site-footer { background: var(--card); border-top: 1px solid var(--latte); padding: 1.8rem 8%; }
+.site-footer { background: var(--bar); color: var(--bar-text); border-top: 1px solid var(--bar-line); padding: 1.8rem 8%; }
 .footer-inner { max-width: 1000px; margin: 0 auto; display: flex; flex-wrap: wrap;
                 justify-content: space-between; align-items: center; gap: 1rem 2rem; }
-.footer-inner p { color: var(--mocha); font-size: .92rem; }
-.footer-status { margin-left: .6rem; padding: .1rem .7rem; border-radius: 999px; font-size: .8rem;
-                 background: color-mix(in srgb, var(--mocha) 18%, transparent); color: var(--mocha); }
-.footer-status.open { background: color-mix(in srgb, var(--sage) 30%, transparent); color: var(--sage-ink); }
+.footer-inner p { color: var(--bar-muted); font-size: .92rem; }
+.footer-status { margin-left: .6rem; padding: .1rem .7rem; border-radius: 999px; font-size: .8rem; color: var(--bar-text);
+                 background: color-mix(in srgb, var(--bar-text) 14%, transparent); }
+.footer-status.open { background: color-mix(in srgb, #7fc46f 38%, transparent); }
 .footer-links { display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; }
-.footer-links a { color: var(--mocha); font-weight: 600; }
-.footer-links a:hover { color: var(--espresso); }
+.footer-links a { color: var(--bar-muted); font-weight: 600; }
+.footer-links a:hover { color: var(--bar-text); }
 
 .not-found { text-align: center; padding: 6rem 1.5rem; }
 .not-found-emoji { font-size: 3rem; }
@@ -338,3 +340,26 @@ body::before {
 }
 @media (max-width: 600px) { .pick { grid-template-columns: 1fr; } }
 @media (max-width: 500px) { .grid.products { grid-template-columns: 1fr; } }
+
+/* ---------- Navbar: phone scroll behaviour ---------- */
+.navbar { transition: transform .3s ease; }
+.navbar.navbar-hidden { transform: translateY(-100%); }       /* slides away while reading down (phones) */
+
+/* Soft fade at the edge of the links row when more links are hidden off-screen */
+.nav-links.has-more {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+          mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+}
+
+/* The theme follows the café's opening hours (set in base.html): light when open, dark when closed */
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"]  { color-scheme: dark; }
+
+/* Welcome page: when the café is closed the photo turns to night */
+.status { font-size: 1.02rem; padding: .5rem 1.3rem; }
+:root[data-theme="dark"] .hero-overlay {
+  background: linear-gradient(90deg, rgba(8,10,22,.93) 0%, rgba(10,12,26,.74) 55%, rgba(12,14,30,.5) 100%);
+}
+@media (max-width: 800px) {
+  :root[data-theme="dark"] .hero-overlay { background: linear-gradient(180deg, rgba(8,10,22,.8), rgba(10,12,26,.92)); }
+}

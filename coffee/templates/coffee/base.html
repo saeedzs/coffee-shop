@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="{% if shop.is_open_now %}light{% else %}dark{% endif %}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,30 +19,11 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/nunito-latin-400-normal.woff2' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-  <script>
-    // Runs before the page paints, so there is no light/dark flash.
-    (function () {
-      const DARK_FROM = 19, DARK_TO = 6, OVERRIDE_HOURS = 12;
-
-      window.themeByTime = function () {
-        const h = new Date().getHours();
-        return (h >= DARK_FROM || h < DARK_TO) ? "dark" : "light";
-      };
-
-      window.currentTheme = function () {
-        try {
-          const o = JSON.parse(localStorage.getItem("themeOverride"));
-          if (o && Date.now() - o.at < OVERRIDE_HOURS * 3600 * 1000) return o.theme;
-        } catch (e) {}
-        return window.themeByTime();
-      };
-
-      document.documentElement.dataset.theme = window.currentTheme();
-    })();
-  </script>
 </head>
 
 <body class="page-{{ request.resolver_match.url_name }}">
+  <a class="skip-link" href="#main">Skip to content</a>
+
   {% if request.resolver_match.url_name != "welcome" %}
   <nav class="navbar" aria-label="Main">
     <a class="brand" href="{% url 'welcome' %}">☕ {{ shop.name }}</a>
@@ -61,10 +42,7 @@
              enterkeyhint="search" maxlength="60" value="{{ query|default:'' }}">
     </form>
 
-    <button id="theme-toggle" type="button" aria-label="Switch between day and evening mode" title="Day / evening mode">🌙</button>
   </nav>
-  {% else %}
-  <button id="theme-toggle" class="floating" type="button" aria-label="Switch between day and evening mode" title="Day / evening mode">🌙</button>
   {% endif %}
 
   <main id="main">
@@ -87,11 +65,12 @@
       <div class="footer-links">
         {% if shop.phone %}<a href="tel:{{ shop.phone_link }}">📞 {{ shop.phone }}</a>{% endif %}
         <a href="{% url 'about' %}">📍 Find us</a>
+        {% url 'table_card' as qr_cards_url %}{% if user.is_staff and qr_cards_url %}<a href="{{ qr_cards_url }}">🖨️ QR cards</a>{% endif %}
       </div>
     </div>
   </footer>
   {% endif %}
 
-  <script src="{% static 'js/theme.js' %}"></script>
+  <script src="{% static 'js/navbar.js' %}"></script>
 </body>
 </html>

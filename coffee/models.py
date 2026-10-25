@@ -4,6 +4,7 @@ from datetime import time
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.dateformat import time_format
 
 from .images import optimize_on_upload
 
@@ -135,6 +136,33 @@ class ShopInfo(models.Model):
         if t <= self.close_time:                           # after midnight: yesterday's session
             return (today - 1) % 7 not in closed
         return False
+
+    @property
+    def open_until_text(self):
+        """Shown while open: 'Open until 11:00 PM' or 'Open 24 hours'."""
+        if self.open_all_day:
+            return "Open 24 hours"
+        return "Open until " + time_format(self.close_time, "g:i A")
+
+    @property
+    def next_opening_text(self):
+        """Shown while closed: 'Opens today at 9:00 AM', 'Opens tomorrow at ...',
+        'Opens Monday at ...'. Empty if the café is closed every day."""
+        now = timezone.localtime()
+        closed = self.closed_day_numbers
+        names = dict(self.DAYS)
+        opening = time(0, 0) if self.open_all_day else self.open_time
+        for offset in range(8):
+            day = (now.weekday() + offset) % 7
+            if day in closed:
+                continue
+            if offset == 0 and now.time() >= opening:          # today's opening is already behind us
+                continue
+            when = "today" if offset == 0 else "tomorrow" if offset == 1 else names[day]
+            if self.open_all_day:
+                return f"Opens {when}"
+            return f"Opens {when} at {time_format(opening, 'g:i A')}"
+        return ""
 
 
 class DailyPick(models.Model):

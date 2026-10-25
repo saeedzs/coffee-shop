@@ -7,11 +7,15 @@
   <div class="hero-text">
     <p class="eyebrow">Welcome to</p>
     <h1>{{ shop.name }}</h1>
-    <p class="tagline">Slow down, breathe, and enjoy something warm.</p>
+    <p class="tagline">
+      {% if shop.is_open_now %}Slow down, breathe, and enjoy something warm.{% else %}We're closed for now. Have a look at the menu while you wait.{% endif %}
+    </p>
     <p>
-      <span class="status {% if shop.is_open_now %}open{% else %}closed{% endif %}">
-        <span class="dot">●</span> {% if shop.is_open_now %}Open now{% else %}Closed right now{% endif %}
-      </span>
+      {% if shop.is_open_now %}
+      <span class="status open"><span class="dot">●</span> {{ shop.open_until_text }}</span>
+      {% else %}
+      <span class="status closed"><span class="dot">🌙</span> Closed right now{% if shop.next_opening_text %} · {{ shop.next_opening_text }}{% endif %}</span>
+      {% endif %}
     </p>
     <div class="hero-actions">
       <a class="btn" href="{% url 'categories' %}">Explore the Menu</a>

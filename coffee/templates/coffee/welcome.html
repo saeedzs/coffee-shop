@@ -1,6 +1,8 @@
 {% extends "coffee/base.html" %}
+{% load static %}
 {% block title %}Welcome{% endblock %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/door-sign.css' %}">
 <section class="hero">
   <div class="hero-overlay"></div>
 
@@ -10,17 +12,24 @@
     <p class="tagline">
       {% if shop.is_open_now %}Slow down, breathe, and enjoy something warm.{% else %}We're closed for now. Have a look at the menu while you wait.{% endif %}
     </p>
-    <p>
-      {% if shop.is_open_now %}
-      <span class="status open"><span class="dot">●</span> {{ shop.open_until_text }}</span>
-      {% else %}
-      <span class="status closed"><span class="dot">🌙</span> Closed right now{% if shop.next_opening_text %} · {{ shop.next_opening_text }}{% endif %}</span>
-      {% endif %}
-    </p>
     <div class="hero-actions">
       <a class="btn" href="{% url 'categories' %}">Explore the Menu</a>
       <a class="btn btn-ghost" href="{% url 'about' %}">About us</a>
     </div>
   </div>
+
+  <!-- Door sign: OPEN / CLOSED. Tapping it shows the hours and address. -->
+  <a class="door-sign {% if shop.is_open_now %}open{% else %}closed{% endif %}" href="{% url 'about' %}"
+     title="Opening hours and how to find us">
+    <span class="plate">
+      {% if shop.is_open_now %}
+        <b>OPEN</b>
+        <small>{{ shop.open_until_text|cut:"Open " }}</small>
+      {% else %}
+        <b>CLOSED</b>
+        {% if shop.next_opening_text %}<small>{{ shop.next_opening_text }}</small>{% endif %}
+      {% endif %}
+    </span>
+  </a>
 </section>
 {% endblock %}

@@ -6,16 +6,19 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from django.utils.dateformat import time_format
-from django.utils.formats import date_format
+from django.utils.translation import get_language, gettext as _, gettext_lazy, gettext_noop
 
+from .i18n import clock, localized, short_date
 from .images import optimize_on_upload
 
 
 class Category(models.Model):
     name = models.CharField(max_length=60)
+    name_fa = models.CharField("Name (Persian)", max_length=60, blank=True,
+                               help_text="Persian name. Leave empty to show the English one on the Persian page")
     slug = models.SlugField(unique=True)
     description = models.CharField(max_length=140, blank=True)
+    description_fa = models.CharField("Description (Persian)", max_length=140, blank=True)
     image = models.ImageField(upload_to="categories/")
     order = models.PositiveIntegerField(default=0)
 
@@ -35,17 +38,21 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    BADGES = [("", "None"), ("new", "New"), ("popular", "Popular"), ("seasonal", "Seasonal")]
+    BADGES = [("", gettext_lazy("None")), ("new", gettext_lazy("New")),
+              ("popular", gettext_lazy("Popular")), ("seasonal", gettext_lazy("Seasonal"))]
 
     category = models.ForeignKey(Category, related_name="products", on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    name_fa = models.CharField("Name (Persian)", max_length=100, blank=True,
+                               help_text="Persian name. Leave empty to show the English one on the Persian page")
     ingredients = models.TextField(help_text="e.g. Espresso, steamed milk, foam")
+    ingredients_fa = models.TextField("Ingredients (Persian)", blank=True)
     image = models.ImageField(upload_to="products/")
 
     # Prices
-    price = models.DecimalField("Price (medium)", max_digits=6, decimal_places=2,
+    price = models.DecimalField("Price (medium)", max_digits=10, decimal_places=2,
                                 help_text="The regular price. For items without sizes, like cakes, this is the only price.")
-    price_large = models.DecimalField("Price (large)", max_digits=6, decimal_places=2,
+    price_large = models.DecimalField("Price (large)", max_digits=10, decimal_places=2,
                                       null=True, blank=True,
                                       help_text="Leave empty if the item has no sizes")
 
@@ -68,13 +75,17 @@ class Product(models.Model):
 
 
 class ShopInfo(models.Model):
-    DAYS = [(0, "Monday"), (1, "Tuesday"), (2, "Wednesday"), (3, "Thursday"),
-            (4, "Friday"), (5, "Saturday"), (6, "Sunday")]
+    DAYS = [(0, gettext_noop("Monday")), (1, gettext_noop("Tuesday")), (2, gettext_noop("Wednesday")),
+            (3, gettext_noop("Thursday")), (4, gettext_noop("Friday")), (5, gettext_noop("Saturday")),
+            (6, gettext_noop("Sunday"))]
 
     name = models.CharField(max_length=100, default="Our Café")
+    name_fa = models.CharField("Name (Persian)", max_length=100, blank=True)
     story = models.TextField(blank=True, help_text="A short, friendly paragraph about the café")
+    story_fa = models.TextField("Story (Persian)", blank=True)
     photo = models.ImageField(upload_to="about/", blank=True)
     address = models.CharField(max_length=200, blank=True)
+    address_fa = models.CharField("Address (Persian)", max_length=200, blank=True)
     phone = models.CharField(max_length=30, blank=True)
     email = models.EmailField(blank=True)
     instagram = models.URLField(blank=True, help_text="Full link, e.g. https://instagram.com/yourcafe")
@@ -116,10 +127,12 @@ class ShopInfo(models.Model):
         closed = self.closed_day_numbers
         names = dict(self.DAYS)
         if not closed:
-            return "Every day"
+            return _("Every day")
         if len(closed) == 7:
-            return "Closed"
-        return "Every day except " + ", ".join(names[d] for d in sorted(closed))
+            return _("Closed")
+        order = (lambda d: (d + 2) % 7) if (get_language() or "").startswith("fa") else (lambda d: d)   # Persian week starts on Saturday
+        days = _(", ").join(_(names[d]) for d in sorted(closed, key=order))
+        return _("Every day except %(days)s") % {"days": days}
 
     def is_open_now(self):
         now = timezone.localtime()
@@ -144,8 +157,27 @@ class ShopInfo(models.Model):
     def open_until_text(self):
         """Shown while open: 'Open until 11:00 PM' or 'Open 24 hours'."""
         if self.open_all_day:
-            return "Open 24 hours"
-        return "Open until " + time_format(self.close_time, "g:i A")
+            return _("Open 24 hours")
+        return _("Open until %(time)s") % {"time": clock(self.close_time)}
+
+    @property
+    def sign_open_text(self):
+        """The small line on the OPEN door sign: 'until 11:00 PM' or '24 hours'."""
+        if self.open_all_day:
+            return _("24 hours")
+        return _("until %(time)s") % {"time": clock(self.close_time)}
+
+    @property
+    def hours_range_text(self):
+        """'9:00 AM – 11:00 PM' or 'Open 24 hours'."""
+        if self.open_all_day:
+            return _("Open 24 hours")
+        return _("%(open)s – %(close)s") % {"open": clock(self.open_time), "close": clock(self.close_time)}
+
+    @property
+    def hours_line(self):
+        """One line for the footer: 'Every day except Saturday, 9:00 AM – 11:00 PM'."""
+        return _("%(days)s, %(hours)s") % {"days": self.open_days_text, "hours": self.hours_range_text}
 
     @property
     def next_opening_text(self):
@@ -161,10 +193,16 @@ class ShopInfo(models.Model):
                 continue
             if offset == 0 and now.time() >= opening:          # today's opening is already behind us
                 continue
-            when = "today" if offset == 0 else "tomorrow" if offset == 1 else names[day]
+            when = {"time": clock(opening), "day": _(names[day])}
             if self.open_all_day:
-                return f"Opens {when}"
-            return f"Opens {when} at {time_format(opening, 'g:i A')}"
+                if offset == 0:
+                    return _("Opens today")
+                return _("Opens tomorrow") if offset == 1 else _("Opens %(day)s") % when
+            if offset == 0:
+                return _("Opens today at %(time)s") % when
+            if offset == 1:
+                return _("Opens tomorrow at %(time)s") % when
+            return _("Opens %(day)s at %(time)s") % when
         return ""
 
 
@@ -173,9 +211,13 @@ class DailyPick(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     note = models.CharField(max_length=200, blank=True,
                             help_text="One line from the barista, e.g. 'Perfect with the rain today'")
+    note_fa = models.CharField("Note (Persian)", max_length=200, blank=True)
 
     class Meta:
         ordering = ["-date"]
+
+    def localized_note(self):
+        return localized(self, "note")
 
     def __str__(self):
         return f"{self.date}: {self.product}"
@@ -184,9 +226,12 @@ class DailyPick(models.Model):
 class SeasonalTag(models.Model):
     """The small hanging tag on the menu page: a seasonal special, a short announcement..."""
     title = models.CharField(max_length=30, help_text="Small top line, e.g. Autumn special")
+    title_fa = models.CharField("Title (Persian)", max_length=30, blank=True)
     text = models.CharField(max_length=40, help_text="Main line, e.g. Pumpkin latte")
+    text_fa = models.CharField("Text (Persian)", max_length=40, blank=True)
     note = models.CharField(max_length=30, blank=True,
                             help_text="Small bottom line. Leave empty to show 'until <end date>' automatically")
+    note_fa = models.CharField("Note (Persian)", max_length=30, blank=True)
     product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.SET_NULL,
                                 help_text="Optional: tapping the tag opens this item")
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL,
@@ -225,10 +270,11 @@ class SeasonalTag(models.Model):
 
     @property
     def note_text(self):
-        if self.note:
-            return self.note
+        note = localized(self, "note")
+        if note:
+            return note
         if self.end_date:
-            return "until " + date_format(self.end_date, "M j")
+            return _("until %(date)s") % {"date": short_date(self.end_date)}
         return ""
 
     @property

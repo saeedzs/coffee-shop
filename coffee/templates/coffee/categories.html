@@ -1,23 +1,24 @@
 {% extends "coffee/base.html" %}
-{% block title %}Our menu{% endblock %}
+{% load i18n coffee_i18n %}
+{% block title %}{% trans "Our menu" %}{% endblock %}
 {% block content %}
 {% include "coffee/_season_tag.html" %}
 <header class="page-header">
-  <a class="back" href="{% url 'welcome' %}">← Home</a>
-  <h2>Our Menu</h2>
-  <p>Choose a category</p>
+  <a class="back" href="{% url 'welcome' %}">{% trans "← Home" %}</a>
+  <h2>{% trans "Our Menu" %}</h2>
+  <p>{% trans "Choose a category" %}</p>
 </header>
 
 {% if pick %}
 <section class="pick">
-  <img src="{{ pick.image.url }}" alt="{{ pick.name }}">
+  <img src="{{ pick.image.url }}" alt="{{ pick|tr:"name" }}">
   <div class="pick-text">
-    <span class="tag">☕ Barista's pick today</span>
-    <h3>{{ pick.name }}</h3>
-    <p class="ingredients">{{ pick.ingredients }}</p>
+    <span class="tag">☕ {% trans "Barista's pick today" %}</span>
+    <h3>{{ pick|tr:"name" }}</h3>
+    <p class="ingredients">{{ pick|tr:"ingredients" }}</p>
     {% if pick_note %}<p class="note">“{{ pick_note }}”</p>{% endif %}
     {% include "coffee/_prices.html" with p=pick %}
-    <a class="btn-small" href="{{ pick.category.get_absolute_url }}#p{{ pick.id }}">View details</a>
+    <a class="btn-small" href="{{ pick.category.get_absolute_url }}#p{{ pick.id }}">{% trans "View details" %}</a>
   </div>
 </section>
 {% endif %}
@@ -27,9 +28,9 @@
   <a class="category-card {% if not c.item_count %}coming-soon{% endif %}" href="{{ c.get_absolute_url }}">
     <img src="{{ c.image.url }}" alt="" loading="lazy" decoding="async">
     <div class="overlay">
-      <h3>{{ c.name }}</h3>
-      <span>{{ c.description }}</span>
-      <span class="count">{% if c.item_count %}{{ c.item_count }} item{{ c.item_count|pluralize }}{% else %}Coming soon{% endif %}</span>
+      <h3>{{ c|tr:"name" }}</h3>
+      <span>{{ c|tr:"description" }}</span>
+      <span class="count">{% if c.item_count %}{% blocktrans with shown=c.item_count|digits count counter=c.item_count %}{{ shown }} item{% plural %}{{ shown }} items{% endblocktrans %}{% else %}{% trans "Coming soon" %}{% endif %}</span>
     </div>
   </a>
   {% endfor %}

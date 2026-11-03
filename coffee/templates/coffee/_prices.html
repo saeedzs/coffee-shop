@@ -1,8 +1,9 @@
+{% load i18n coffee_i18n %}
 <div class="prices">
   {% if p.price_large %}
-    <span class="size"><small>Medium</small>{{ currency }}{{ p.price }}</span>
-    <span class="size"><small>Large</small>{{ currency }}{{ p.price_large }}</span>
+    <span class="size"><small>{% trans "Medium" %}</small>{{ p.price|money }}</span>
+    <span class="size"><small>{% trans "Large" %}</small>{{ p.price_large|money }}</span>
   {% else %}
-    <span class="price">{{ currency }}{{ p.price }}</span>
+    <span class="price">{{ p.price|money }}</span>
   {% endif %}
 </div>

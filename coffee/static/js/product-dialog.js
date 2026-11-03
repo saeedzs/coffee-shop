@@ -8,6 +8,11 @@
   // Old browsers without <dialog>: the cards simply stay as they are.
   if (!dialog || !cards.length || typeof dialog.showModal !== "function") return;
 
+  const rtl = document.documentElement.dir === "rtl";           // Persian pages read right to left
+  const persian = document.documentElement.lang === "fa";
+  const num = (n) => persian ? String(n).replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[d]) : String(n);
+  const ofWord = dialog.dataset.of || "of";                      // "of" / "از", from the page
+
   const $ = (selector) => dialog.querySelector(selector);
   const idOf = (i) => cards[i].dataset.product;
   let index = -1;
@@ -30,7 +35,7 @@
     $(".pd-diet").replaceChildren(...Array.from(card.querySelectorAll(".diet .chip"), (c) => c.cloneNode(true)));
     $(".pd-prices").replaceChildren(card.querySelector(".prices").cloneNode(true));
 
-    $(".pd-counter").textContent = `${index + 1} of ${cards.length}`;
+    $(".pd-counter").textContent = `${num(index + 1)} ${ofWord} ${num(cards.length)}`;
     $(".pd-prev").disabled = index === 0;
     $(".pd-next").disabled = index === cards.length - 1;
     $(".pd-info").scrollTop = 0;
@@ -72,8 +77,10 @@
 
   dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });   // the dark area
   dialog.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") step(-1);
-    if (e.key === "ArrowRight") step(1);
+    const forward = rtl ? "ArrowLeft" : "ArrowRight";            // the arrow that points "onward" flips in Persian
+    const back = rtl ? "ArrowRight" : "ArrowLeft";
+    if (e.key === back) step(-1);
+    if (e.key === forward) step(1);
   });
 
   // Swipe left / right on touch screens
@@ -83,7 +90,7 @@
     if (startX === null) return;
     const dx = e.changedTouches[0].clientX - startX;
     startX = null;
-    if (Math.abs(dx) > 70) step(dx < 0 ? 1 : -1);
+    if (Math.abs(dx) > 70) step((dx < 0 ? 1 : -1) * (rtl ? -1 : 1));   // swipe left = next, or right = next in Persian
   }, { passive: true });
 
   // Closing: undo the history entry we added (or just clear the #p12 from the address)

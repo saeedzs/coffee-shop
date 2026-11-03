@@ -17,7 +17,7 @@ def todays_pick():
     pick = (DailyPick.objects.filter(date=today, product__available=True)
             .select_related("product__category").first())
     if pick:
-        return pick.product, pick.note
+        return pick.product, pick.localized_note()
 
     available = Product.objects.filter(available=True).select_related("category").order_by("id")
     count = available.count()
@@ -65,9 +65,9 @@ def search(request):
     products = Product.objects.none()
     if query:
         products = Product.objects.filter(
-            Q(name__icontains=query) |
-            Q(ingredients__icontains=query) |
-            Q(category__name__icontains=query)
+            Q(name__icontains=query) | Q(name_fa__icontains=query) |
+            Q(ingredients__icontains=query) | Q(ingredients_fa__icontains=query) |
+            Q(category__name__icontains=query) | Q(category__name_fa__icontains=query)
         ).select_related("category").order_by("-available", "name")
     return render(request, "coffee/search.html", {"products": products, "query": query})
 

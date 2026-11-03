@@ -1,14 +1,15 @@
 {% extends "coffee/base.html" %}
-{% block title %}Search{% endblock %}
+{% load i18n coffee_i18n %}
+{% block title %}{% trans "Search" %}{% endblock %}
 {% block content %}
 <header class="page-header">
-  <h2>{% if query %}Results for “{{ query }}”{% else %}Search the menu{% endif %}</h2>
-  {% if query %}<p>{{ products|length }} item{{ products|length|pluralize }} found</p>{% endif %}
+  <h2>{% if query %}{% blocktrans %}Results for “{{ query }}”{% endblocktrans %}{% else %}{% trans "Search the menu" %}{% endif %}</h2>
+  {% if query %}<p>{% blocktrans with shown=products|length|digits count counter=products|length %}{{ shown }} item found{% plural %}{{ shown }} items found{% endblocktrans %}</p>{% endif %}
 </header>
 
 {% if not query %}
-<div class="filters" aria-label="Browse by category">
-  {% for c in nav_categories %}<a class="chip-filter" href="{{ c.get_absolute_url }}">{{ c.name }}</a>{% endfor %}
+<div class="filters" aria-label="{% trans "Browse by category" %}">
+  {% for c in nav_categories %}<a class="chip-filter" href="{{ c.get_absolute_url }}">{{ c|tr:"name" }}</a>{% endfor %}
 </div>
 {% endif %}
 
@@ -16,7 +17,7 @@
   {% for p in products %}
   {% include "coffee/_product_card.html" with show_category=True %}
   {% empty %}
-  <p class="empty">{% if query %}Nothing found. Try another word, like “milk” or “mint”.{% else %}Type a drink, cake, or ingredient in the search box.{% endif %}</p>
+  <p class="empty">{% if query %}{% trans "Nothing found. Try another word, like “milk” or “mint”." %}{% else %}{% trans "Type a drink, cake, or ingredient in the search box." %}{% endif %}</p>
   {% endfor %}
 </div>
 {% include "coffee/_product_dialog.html" %}

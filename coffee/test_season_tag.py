@@ -44,12 +44,12 @@ class SeasonalTagTests(TestCase):
 
     # ---- where it shows ----
     def test_nothing_is_shown_when_there_is_no_tag(self):
-        self.assertNotContains(self.client.get("/menu/"), "season-tag")
+        self.assertNotContains(self.client.get("/en/menu/"), "season-tag")
 
     def test_shown_on_the_menu_page_only(self):
         self.tag()
-        self.assertContains(self.client.get("/menu/"), "Pumpkin latte")
-        for url in ["/", "/menu/tea/", "/about/", "/search/"]:
+        self.assertContains(self.client.get("/en/menu/"), "Pumpkin latte")
+        for url in ["/en/", "/en/menu/tea/", "/en/about/", "/en/search/"]:
             with self.subTest(url=url):
                 self.assertNotContains(self.client.get(url), "season-tag")
 
@@ -82,15 +82,15 @@ class SeasonalTagTests(TestCase):
 
     def test_link_to_an_item_opens_its_pop_up(self):
         t = self.tag(product=self.latte)
-        self.assertEqual(t.link_url, f"/menu/tea/#p{self.latte.id}")
-        self.assertContains(self.client.get("/menu/"), f'href="/menu/tea/#p{self.latte.id}"')
+        self.assertEqual(t.link_url, f"/en/menu/tea/#p{self.latte.id}")
+        self.assertContains(self.client.get("/en/menu/"), f'href="/en/menu/tea/#p{self.latte.id}"')
 
     def test_link_to_a_category(self):
-        self.assertEqual(self.tag(category=self.tea).link_url, "/menu/tea/")
+        self.assertEqual(self.tag(category=self.tea).link_url, "/en/menu/tea/")
 
     def test_without_a_link_it_is_not_clickable(self):
         self.tag()
-        r = self.client.get("/menu/")
+        r = self.client.get("/en/menu/")
         self.assertContains(r, '<div class="season-tag">')
         self.assertNotContains(r, '<a class="season-tag"')
 

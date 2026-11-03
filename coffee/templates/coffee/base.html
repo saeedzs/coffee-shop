@@ -1,47 +1,55 @@
-{% load static %}
+{% load static i18n coffee_i18n %}
 <!DOCTYPE html>
-<html lang="en" data-theme="{% if shop.is_open_now %}light{% else %}dark{% endif %}">
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}" data-theme="{% if shop.is_open_now %}light{% else %}dark{% endif %}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Menu{% endblock %} · {{ shop.name }}</title>
-  <meta name="description" content="{% block description %}Browse the {{ shop.name }} menu: coffees, cakes, teas and herbal drinks, with prices and ingredients.{% endblock %}">
+  <title>{% block title %}{% trans "Menu" %}{% endblock %} · {{ shop|tr:"name" }}</title>
+  <meta name="description" content="{% block description %}{% blocktrans with name=shop|tr:"name" %}Browse the {{ name }} menu: coffees, cakes, teas and herbal drinks, with prices and ingredients.{% endblocktrans %}{% endblock %}">
   <meta name="theme-color" content="#3b2a20">
+
+  <!-- The same page in the other language, for search engines -->
+  <link rel="alternate" hreflang="en" href="{{ request.scheme }}://{{ request.get_host }}{% switch_url 'en' %}">
+  <link rel="alternate" hreflang="fa" href="{{ request.scheme }}://{{ request.get_host }}{% switch_url 'fa' %}">
 
   <!-- Link preview when the menu is shared in Telegram, Instagram, WhatsApp... -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="{{ shop.name }}">
-  <meta property="og:title" content="{% block og_title %}{{ shop.name }}{% endblock %}">
-  <meta property="og:description" content="Our menu, opening hours and how to find us.">
+  <meta property="og:locale" content="{% if LANGUAGE_CODE == 'fa' %}fa_IR{% else %}en_US{% endif %}">
+  <meta property="og:site_name" content="{{ shop|tr:"name" }}">
+  <meta property="og:title" content="{% block og_title %}{{ shop|tr:"name" }}{% endblock %}">
+  <meta property="og:description" content="{% trans "Our menu, opening hours and how to find us." %}">
   <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/hero.webp' %}">
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☕%3C/text%3E%3C/svg%3E">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="{% static 'fonts/nunito-latin-400-normal.woff2' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/i18n.css' %}">
 
 </head>
 
 <body class="page-{{ request.resolver_match.url_name }}">
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main">{% trans "Skip to content" %}</a>
 
   {% if request.resolver_match.url_name != "welcome" %}
-  <nav class="navbar" aria-label="Main">
-    <a class="brand" href="{% url 'welcome' %}">☕ {{ shop.name }}</a>
+  <nav class="navbar" aria-label="{% trans "Main" %}">
+    <a class="brand" href="{% url 'welcome' %}">☕ {{ shop|tr:"name" }}</a>
 
     <div class="nav-links">
-      <a href="{% url 'categories' %}" class="{% if request.resolver_match.url_name == 'categories' %}active{% endif %}">Menu</a>
+      <a href="{% url 'categories' %}" class="{% if request.resolver_match.url_name == 'categories' %}active{% endif %}">{% trans "Menu" %}</a>
       {% for c in nav_categories %}
       <a href="{{ c.get_absolute_url }}"
-         class="{% if request.path == c.get_absolute_url %}active{% endif %}">{{ c.name }}</a>
+         class="{% if request.path == c.get_absolute_url %}active{% endif %}">{{ c|tr:"name" }}</a>
       {% endfor %}
-      <a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a>
+      <a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">{% trans "About" %}</a>
     </div>
 
     <form class="search" action="{% url 'search' %}" method="get" role="search">
-      <input type="search" name="q" placeholder="Search the menu…" aria-label="Search the menu"
+      {% trans "Search the menu…" as search_hint %}{% trans "Search the menu" as search_label %}
+      <input type="search" name="q" placeholder="{{ search_hint }}" aria-label="{{ search_label }}"
              enterkeyhint="search" maxlength="60" value="{{ query|default:'' }}">
     </form>
 
+    {% include "coffee/_lang_switch.html" %}
   </nav>
   {% endif %}
 
@@ -53,19 +61,16 @@
   <footer class="site-footer">
     <div class="footer-inner">
       <div>
-        <strong>{{ shop.name }}</strong>
+        <strong>{{ shop|tr:"name" }}</strong>
         <span class="footer-status {% if shop.is_open_now %}open{% else %}closed{% endif %}">
-          ● {% if shop.is_open_now %}Open now{% else %}Closed right now{% endif %}
+          ● {% if shop.is_open_now %}{% trans "Open now" %}{% else %}{% trans "Closed right now" %}{% endif %}
         </span>
-        <p>
-          {{ shop.open_days_text }},
-          {% if shop.open_all_day %}open 24 hours{% else %}{{ shop.open_time|time:"g:i A" }} – {{ shop.close_time|time:"g:i A" }}{% endif %}
-        </p>
+        <p>{{ shop.hours_line }}</p>
       </div>
       <div class="footer-links">
-        {% if shop.phone %}<a href="tel:{{ shop.phone_link }}">📞 {{ shop.phone }}</a>{% endif %}
-        <a href="{% url 'about' %}">📍 Find us</a>
-        {% url 'table_card' as qr_cards_url %}{% if user.is_staff and qr_cards_url %}<a href="{{ qr_cards_url }}">🖨️ QR cards</a>{% endif %}
+        {% if shop.phone %}<a href="tel:{{ shop.phone_link }}">📞 <span dir="ltr">{{ shop.phone|digits }}</span></a>{% endif %}
+        <a href="{% url 'about' %}">📍 {% trans "Find us" %}</a>
+        {% url 'table_card' as qr_cards_url %}{% if user.is_staff and qr_cards_url %}<a href="{{ qr_cards_url }}">🖨️ {% trans "QR cards" %}</a>{% endif %}
       </div>
     </div>
   </footer>

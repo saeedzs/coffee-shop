@@ -10,7 +10,7 @@
 
   // ---- 1. links row ----
   function updateFade() {
-    links.classList.toggle("has-more", links.scrollLeft + links.clientWidth < links.scrollWidth - 2);
+    links.classList.toggle("has-more", Math.abs(links.scrollLeft) + links.clientWidth < links.scrollWidth - 2);   // scrollLeft is negative in right-to-left pages
   }
   const active = links.querySelector(".active");
   if (active) {                                          // bring the current page's link into view

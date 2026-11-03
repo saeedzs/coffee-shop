@@ -1,9 +1,9 @@
-{% load static %}
+{% load static i18n %}
 <link rel="stylesheet" href="{% static 'css/product-dialog.css' %}">
 
-<dialog id="product-dialog" class="product-dialog" aria-labelledby="pd-name">
+<dialog id="product-dialog" class="product-dialog" aria-labelledby="pd-name" data-of="{% trans "of" %}">
   <div class="pd">
-    <button type="button" class="pd-close" aria-label="Close">✕</button>
+    <button type="button" class="pd-close" aria-label="{% trans "Close" %}">✕</button>
 
     <div class="pd-media"></div>
 
@@ -13,12 +13,12 @@
       <p class="pd-ingredients"></p>
       <div class="diet pd-diet"></div>
       <div class="pd-prices"></div>
-      <p class="pd-note">Allergic or unsure? Please ask our staff before ordering, as recipes can change.</p>
+      <p class="pd-note">{% trans "Allergic or unsure? Please ask our staff before ordering, as recipes can change." %}</p>
 
       <div class="pd-nav">
-        <button type="button" class="pd-prev" aria-label="Previous item">‹ Previous</button>
+        <button type="button" class="pd-prev" aria-label="{% trans "Previous item" %}">{% trans "‹ Previous" %}</button>
         <span class="pd-counter" aria-live="polite"></span>
-        <button type="button" class="pd-next" aria-label="Next item">Next ›</button>
+        <button type="button" class="pd-next" aria-label="{% trans "Next item" %}">{% trans "Next ›" %}</button>
       </div>
     </div>
   </div>

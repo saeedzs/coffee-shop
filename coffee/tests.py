@@ -46,7 +46,7 @@ class MenuTests(TestCase):
                 self.assertEqual(self.client.get(reverse(name, args=args)).status_code, 200)
 
     def test_unknown_category_shows_friendly_404(self):
-        r = self.client.get("/menu/does-not-exist/")
+        r = self.client.get("/en/menu/does-not-exist/")
         self.assertContains(r, "couldn't find that page", status_code=404)
 
     def test_sold_out_items_stay_visible_but_sink_to_the_bottom(self):

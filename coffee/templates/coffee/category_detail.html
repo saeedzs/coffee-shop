@@ -1,26 +1,27 @@
 {% extends "coffee/base.html" %}
-{% block title %}{{ category.name }}{% endblock %}
+{% load i18n coffee_i18n %}
+{% block title %}{{ category|tr:"name" }}{% endblock %}
 {% block content %}
 <header class="page-header">
-  <a class="back" href="{% url 'categories' %}">← All categories</a>
-  <h2>{{ category.name }}</h2>
-  {% if category.description %}<p>{{ category.description }}</p>{% endif %}
+  <a class="back" href="{% url 'categories' %}">{% trans "← All categories" %}</a>
+  <h2>{{ category|tr:"name" }}</h2>
+  {% with description=category|tr:"description" %}{% if description %}<p>{{ description }}</p>{% endif %}{% endwith %}
 </header>
 
-<div class="filters" role="group" aria-label="Filter by diet">
-  <a class="chip-filter {% if not active_diet %}active{% endif %}" href="{{ category.get_absolute_url }}">All</a>
-  <a class="chip-filter {% if active_diet == 'vegan' %}active{% endif %}" href="?diet=vegan">🌱 Vegan</a>
-  <a class="chip-filter {% if active_diet == 'caffeine_free' %}active{% endif %}" href="?diet=caffeine_free">💤 Caffeine-free</a>
+<div class="filters" role="group" aria-label="{% trans "Filter by diet" %}">
+  <a class="chip-filter {% if not active_diet %}active{% endif %}" href="{{ category.get_absolute_url }}">{% trans "All" %}</a>
+  <a class="chip-filter {% if active_diet == 'vegan' %}active{% endif %}" href="?diet=vegan">🌱 {% trans "Vegan" %}</a>
+  <a class="chip-filter {% if active_diet == 'caffeine_free' %}active{% endif %}" href="?diet=caffeine_free">💤 {% trans "Caffeine-free" %}</a>
 </div>
 
 <div class="grid products">
   {% for p in products %}
     {% include "coffee/_product_card.html" %}
   {% empty %}
-  <p class="empty">{% if active_diet %}Nothing matches this filter in {{ category.name }}.{% else %}Nothing here yet, check back soon.{% endif %}</p>
+  <p class="empty">{% if active_diet %}{% blocktrans with name=category|tr:"name" %}Nothing matches this filter in {{ name }}.{% endblocktrans %}{% else %}{% trans "Nothing here yet, check back soon." %}{% endif %}</p>
   {% endfor %}
 </div>
 
-<p class="allergy-note">Allergic or unsure? Please ask our staff before ordering, as recipes can change.</p>
+<p class="allergy-note">{% trans "Allergic or unsure? Please ask our staff before ordering, as recipes can change." %}</p>
 {% include "coffee/_product_dialog.html" %}
 {% endblock %}

@@ -1,0 +1,84 @@
+/* =====================================================================
+   English / Persian support
+   1 Persian font   2 Language switch button   3 Persian typography
+   4 Right-to-left layout (everything below is scoped to dir="rtl")
+   ===================================================================== */
+
+/* ---------- 1. Persian font (Vazirmatn, served from this site) ---------- */
+@font-face { font-family: "Vazirmatn"; font-weight: 400; font-display: swap;
+  src: url("../fonts/vazirmatn-arabic-400-normal.woff2") format("woff2");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0898-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
+@font-face { font-family: "Vazirmatn"; font-weight: 600; font-display: swap;
+  src: url("../fonts/vazirmatn-arabic-600-normal.woff2") format("woff2");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0898-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
+@font-face { font-family: "Vazirmatn"; font-weight: 700; font-display: swap;
+  src: url("../fonts/vazirmatn-arabic-700-normal.woff2") format("woff2");
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0898-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
+@font-face { font-family: "Vazirmatn"; font-weight: 400; font-display: swap;
+  src: url("../fonts/vazirmatn-latin-400-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Vazirmatn"; font-weight: 600; font-display: swap;
+  src: url("../fonts/vazirmatn-latin-600-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* ---------- 2. The language switch ("فارسی" / "English") ---------- */
+.lang-switch {
+  display: inline-flex; align-items: center; flex-shrink: 0; white-space: nowrap;
+  padding: .4rem 1rem; border-radius: 999px; font-size: .9rem; font-weight: 600;
+  background: var(--card); color: var(--bar-text); border: 1px solid var(--bar-line);
+  transition: transform .25s, border-color .25s;
+}
+.lang-switch:hover { transform: translateY(-2px); border-color: var(--bar-muted); }
+
+.lang-corner {                          /* on the welcome page: top corner, opposite the door sign */
+  position: absolute; top: 1.2rem; left: 8%; z-index: 6;
+  background: rgba(250, 245, 236, .16); color: #faf5ec; border-color: rgba(250, 245, 236, .5);
+}
+.lang-corner:hover { border-color: #faf5ec; }
+@media (max-width: 700px) { .lang-corner { left: 5%; top: 1rem; } }
+
+/* ---------- 3. Persian typography ---------- */
+html[lang="fa"] { font-size: 105%; }
+html[lang="fa"] *, html[lang="fa"] *::before, html[lang="fa"] *::after {
+  font-family: "Vazirmatn", Tahoma, "Segoe UI", system-ui, sans-serif;
+  letter-spacing: 0 !important;         /* spacing letters breaks the joined Persian script */
+  text-transform: none !important;      /* there are no capitals in Persian */
+}
+html[lang="fa"] body { line-height: 1.9; }
+html[lang="fa"] :is(h1, h2, h3, .brand, .plate b) { font-weight: 700; line-height: 1.5; }
+html[lang="fa"] .hero h1 { line-height: 1.35; }
+html[lang="fa"] :is(small, .eyebrow, .tag) { font-size: .86em; }
+html[lang="fa"] .plate small { font-size: .82rem; }
+
+/* ---------- 4. Right-to-left layout ---------- */
+[dir="rtl"] .skip-link { left: auto; right: 1rem; }
+[dir="rtl"] .footer-status { margin-left: 0; margin-right: .6rem; }
+[dir="rtl"] .card-open { text-align: right; }
+
+/* badges and corners swap sides */
+[dir="rtl"] .ribbon { left: auto; right: 12px; }
+[dir="rtl"] .pbadge { right: auto; left: 12px; }
+[dir="rtl"] .img-wrap::after { right: auto; left: 10px; }
+[dir="rtl"] .pd-close { right: auto; left: 12px; }
+
+/* hanging signs and the language button */
+[dir="rtl"] .door-sign { right: auto; left: 8%; }
+[dir="rtl"] .season-tag { right: auto; left: 7%; }
+[dir="rtl"] .lang-corner { left: auto; right: 8%; }
+@media (max-width: 700px) {
+  [dir="rtl"] .door-sign { left: 5%; }
+  [dir="rtl"] .lang-corner { right: 5%; }
+}
+
+/* the dark gradient behind the text follows the text */
+@media (min-width: 701px) {
+  [dir="rtl"] .hero-overlay { background: linear-gradient(270deg, rgba(30,18,10,.78) 0%, rgba(30,18,10,.45) 55%, rgba(30,18,10,.15) 100%); }
+  :root[data-theme="dark"][dir="rtl"] .hero-overlay { background: linear-gradient(270deg, rgba(8,10,22,.93) 0%, rgba(10,12,26,.74) 55%, rgba(12,14,30,.5) 100%); }
+}
+
+/* the arch photo's offset frame, and the fade at the end of the category links */
+[dir="rtl"] .story-photo::after { inset: 14px 14px -14px -14px; }
+[dir="rtl"] .nav-links.has-more {
+  -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent);
+          mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent);
+}

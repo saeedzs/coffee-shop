@@ -1,32 +1,33 @@
 {% extends "coffee/base.html" %}
-{% load static %}
-{% block title %}Welcome{% endblock %}
+{% load static i18n coffee_i18n %}
+{% block title %}{% trans "Welcome" %}{% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/door-sign.css' %}">
 <section class="hero">
   <div class="hero-overlay"></div>
+  {% include "coffee/_lang_switch.html" with extra_class="lang-corner" %}
 
   <div class="hero-text">
-    <p class="eyebrow">Welcome to</p>
-    <h1>{{ shop.name }}</h1>
+    <p class="eyebrow">{% trans "Welcome to" %}</p>
+    <h1>{{ shop|tr:"name" }}</h1>
     <p class="tagline">
-      {% if shop.is_open_now %}Slow down, breathe, and enjoy something warm.{% else %}We're closed for now. Have a look at the menu while you wait.{% endif %}
+      {% if shop.is_open_now %}{% trans "Slow down, breathe, and enjoy something warm." %}{% else %}{% trans "We're closed for now. Have a look at the menu while you wait." %}{% endif %}
     </p>
     <div class="hero-actions">
-      <a class="btn" href="{% url 'categories' %}">Explore the Menu</a>
-      <a class="btn btn-ghost" href="{% url 'about' %}">About us</a>
+      <a class="btn" href="{% url 'categories' %}">{% trans "Explore the Menu" %}</a>
+      <a class="btn btn-ghost" href="{% url 'about' %}">{% trans "About us" %}</a>
     </div>
   </div>
 
   <!-- Door sign: OPEN / CLOSED. Tapping it shows the hours and address. -->
   <a class="door-sign {% if shop.is_open_now %}open{% else %}closed{% endif %}" href="{% url 'about' %}"
-     title="Opening hours and how to find us">
+     title="{% trans "Opening hours and how to find us" %}">
     <span class="plate">
       {% if shop.is_open_now %}
-        <b>OPEN</b>
-        <small>{{ shop.open_until_text|cut:"Open " }}</small>
+        <b>{% trans "OPEN" %}</b>
+        <small>{{ shop.sign_open_text }}</small>
       {% else %}
-        <b>CLOSED</b>
+        <b>{% trans "CLOSED" %}</b>
         {% if shop.next_opening_text %}<small>{{ shop.next_opening_text }}</small>{% endif %}
       {% endif %}
     </span>

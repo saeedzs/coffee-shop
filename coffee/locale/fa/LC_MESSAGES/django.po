@@ -1,0 +1,507 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: mycoffeeshop\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-27 23:57+0330\n"
+"PO-Revision-Date: 2026-10-27 12:00+0000\n"
+"Last-Translator: mycoffeeshop\n"
+"Language-Team: Persian\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: models.py:41
+msgid "None"
+msgstr "هیچ"
+
+#: models.py:41
+msgid "New"
+msgstr "جدید"
+
+#: models.py:42
+msgid "Popular"
+msgstr "پرطرفدار"
+
+#: models.py:42
+msgid "Seasonal"
+msgstr "فصلی"
+
+#: models.py:78
+msgid "Monday"
+msgstr "دوشنبه"
+
+#: models.py:78
+msgid "Tuesday"
+msgstr "سه‌شنبه"
+
+#: models.py:78
+msgid "Wednesday"
+msgstr "چهارشنبه"
+
+#: models.py:79
+msgid "Thursday"
+msgstr "پنجشنبه"
+
+#: models.py:79
+msgid "Friday"
+msgstr "جمعه"
+
+#: models.py:79
+msgid "Saturday"
+msgstr "شنبه"
+
+#: models.py:80
+msgid "Sunday"
+msgstr "یکشنبه"
+
+#: models.py:130
+msgid "Every day"
+msgstr "همه روزه"
+
+#: models.py:132
+msgid "Closed"
+msgstr "تعطیل"
+
+#: models.py:134
+msgid ", "
+msgstr "، "
+
+#: models.py:135
+#, python-format
+msgid "Every day except %(days)s"
+msgstr "همه روزه به‌جز %(days)s"
+
+#: models.py:160 models.py:174
+msgid "Open 24 hours"
+msgstr "شبانه‌روزی باز است"
+
+#: models.py:161
+#, python-format
+msgid "Open until %(time)s"
+msgstr "تا ساعت %(time)s باز است"
+
+#: models.py:167
+msgid "24 hours"
+msgstr "شبانه‌روزی"
+
+#: models.py:168
+#, python-format
+msgid "until %(time)s"
+msgstr "تا ساعت %(time)s"
+
+#: models.py:175
+#, python-format
+msgid "%(open)s – %(close)s"
+msgstr "%(open)s تا %(close)s"
+
+#: models.py:180
+#, python-format
+msgid "%(days)s, %(hours)s"
+msgstr "%(days)s، %(hours)s"
+
+#: models.py:199
+msgid "Opens today"
+msgstr "امروز باز می‌شود"
+
+#: models.py:200
+msgid "Opens tomorrow"
+msgstr "فردا باز می‌شود"
+
+#: models.py:200
+#, python-format
+msgid "Opens %(day)s"
+msgstr "%(day)s باز می‌شود"
+
+#: models.py:202
+#, python-format
+msgid "Opens today at %(time)s"
+msgstr "امروز ساعت %(time)s باز می‌شود"
+
+#: models.py:204
+#, python-format
+msgid "Opens tomorrow at %(time)s"
+msgstr "فردا ساعت %(time)s باز می‌شود"
+
+#: models.py:205
+#, python-format
+msgid "Opens %(day)s at %(time)s"
+msgstr "%(day)s ساعت %(time)s باز می‌شود"
+
+#: models.py:277
+#, python-format
+msgid "until %(date)s"
+msgstr "تا %(date)s"
+
+#: templates/404.html:3
+msgid "Page not found"
+msgstr "صفحه پیدا نشد"
+
+#: templates/404.html:7
+msgid "We couldn't find that page"
+msgstr "این صفحه را پیدا نکردیم"
+
+#: templates/404.html:8
+msgid ""
+"The link may be old, or the page has moved. The menu is just a tap away."
+msgstr ""
+"ممکن است پیوند قدیمی باشد یا صفحه جابه‌جا شده باشد. منو فقط یک لمس فاصله "
+"دارد."
+
+#: templates/404.html:9
+msgid "Go to the menu"
+msgstr "رفتن به منو"
+
+#: templates/coffee/_prices.html:3
+msgid "Medium"
+msgstr "متوسط"
+
+#: templates/coffee/_prices.html:4
+msgid "Large"
+msgstr "بزرگ"
+
+#: templates/coffee/_product_card.html:2
+msgid "Barista's pick"
+msgstr "پیشنهاد باریستا"
+
+#: templates/coffee/_product_card.html:7
+msgid "Sold out today"
+msgstr "امروز تمام شد"
+
+#: templates/coffee/_product_card.html:17
+#: templates/coffee/category_detail.html:13
+msgid "Vegan"
+msgstr "وگان"
+
+#: templates/coffee/_product_card.html:18
+#: templates/coffee/category_detail.html:14
+msgid "Caffeine-free"
+msgstr "بدون کافئین"
+
+#: templates/coffee/_product_card.html:19
+msgid "Contains nuts"
+msgstr "حاوی آجیل"
+
+#: templates/coffee/_product_card.html:20
+msgid "Contains dairy"
+msgstr "حاوی لبنیات"
+
+#: templates/coffee/_product_dialog.html:4
+msgid "of"
+msgstr "از"
+
+#: templates/coffee/_product_dialog.html:6
+msgid "Close"
+msgstr "بستن"
+
+#: templates/coffee/_product_dialog.html:16
+#: templates/coffee/category_detail.html:25
+msgid ""
+"Allergic or unsure? Please ask our staff before ordering, as recipes can "
+"change."
+msgstr ""
+"حساسیت دارید یا مطمئن نیستید؟ لطفاً پیش از سفارش از پرسنل ما بپرسید؛ ممکن "
+"است دستور تهیه تغییر کند."
+
+#: templates/coffee/_product_dialog.html:19
+msgid "Previous item"
+msgstr "مورد قبلی"
+
+#: templates/coffee/_product_dialog.html:19
+msgid "‹ Previous"
+msgstr "‹ قبلی"
+
+#: templates/coffee/_product_dialog.html:21
+msgid "Next item"
+msgstr "مورد بعدی"
+
+#: templates/coffee/_product_dialog.html:21
+msgid "Next ›"
+msgstr "بعدی ›"
+
+#: templates/coffee/about.html:3 templates/coffee/welcome.html:18
+msgid "About us"
+msgstr "درباره ما"
+
+#: templates/coffee/about.html:4
+#, python-format
+msgid "Find %(name)s: address, opening hours, phone and social links."
+msgstr "نشانی، ساعت کاری، تلفن و شبکه‌های اجتماعی %(name)s."
+
+#: templates/coffee/about.html:11
+msgid "Our story"
+msgstr "داستان ما"
+
+#: templates/coffee/about.html:13
+msgid "A little corner of the day to slow down."
+msgstr "گوشه‌ای کوچک از روز برای کمی آرام‌گرفتن."
+
+#: templates/coffee/about.html:15 templates/coffee/about.html:103
+#: templates/coffee/base.html:66
+msgid "Open now"
+msgstr "اکنون باز است"
+
+#: templates/coffee/about.html:15 templates/coffee/about.html:104
+#: templates/coffee/base.html:66
+msgid "Closed right now"
+msgstr "اکنون بسته است"
+
+#: templates/coffee/about.html:21
+msgid "Quick actions"
+msgstr "دسترسی سریع"
+
+#: templates/coffee/about.html:23
+msgid "Call"
+msgstr "تماس"
+
+#: templates/coffee/about.html:27
+msgid "Directions"
+msgstr "مسیریابی"
+
+#: templates/coffee/about.html:31
+msgid "Instagram"
+msgstr "اینستاگرام"
+
+#: templates/coffee/about.html:35
+msgid "Telegram"
+msgstr "تلگرام"
+
+#: templates/coffee/about.html:37 templates/coffee/base.html:7
+#: templates/coffee/base.html:38
+msgid "Menu"
+msgstr "منو"
+
+#: templates/coffee/about.html:47
+msgid "Welcome in"
+msgstr "خوش آمدید"
+
+#: templates/coffee/about.html:48
+msgid ""
+"Fresh coffee, homemade cakes and a calm place to sit. Take your time, we're "
+"happy to have you."
+msgstr ""
+"قهوهٔ تازه، کیک‌های خانگی و جایی آرام برای نشستن. با خیال راحت وقت بگذارید، "
+"خوشحالیم که اینجایید."
+
+#: templates/coffee/about.html:55
+msgid "Freshly brewed"
+msgstr "تازه دم"
+
+#: templates/coffee/about.html:55
+msgid "Every cup made to order, just for you."
+msgstr "هر فنجان همان لحظه‌ای که سفارش می‌دهید، فقط برای شما."
+
+#: templates/coffee/about.html:56
+msgid "Baked with care"
+msgstr "پخته‌شده با دقت"
+
+#: templates/coffee/about.html:56
+msgid "Cakes and sweets made from simple ingredients."
+msgstr "کیک و شیرینی با مواد اولیهٔ ساده."
+
+#: templates/coffee/about.html:57
+msgid "Cozy &amp; calm"
+msgstr "دنج و آرام"
+
+#: templates/coffee/about.html:57
+msgid "A quiet corner to read, work or catch up."
+msgstr "گوشه‌ای ساکت برای مطالعه، کار یا گپ‌وگفت."
+
+#: templates/coffee/about.html:62
+msgid "Come say hello"
+msgstr "به ما سر بزنید"
+
+#: templates/coffee/about.html:70
+msgid "Address"
+msgstr "نشانی"
+
+#: templates/coffee/about.html:80
+msgid "Phone"
+msgstr "تلفن"
+
+#: templates/coffee/about.html:90
+msgid "Email"
+msgstr "ایمیل"
+
+#: templates/coffee/about.html:99
+msgid "Opening hours"
+msgstr "ساعت کاری"
+
+#: templates/coffee/about.html:113
+msgid "Map"
+msgstr "نقشه"
+
+#: templates/coffee/about.html:121
+msgid "Your table is waiting"
+msgstr "میز شما منتظر است"
+
+#: templates/coffee/about.html:122
+msgid "Have a look at what we're serving today."
+msgstr "ببینید امروز چه چیزهایی داریم."
+
+#: templates/coffee/about.html:123
+msgid "Browse the menu"
+msgstr "مشاهدهٔ منو"
+
+#: templates/coffee/base.html:8
+#, python-format
+msgid ""
+"Browse the %(name)s menu: coffees, cakes, teas and herbal drinks, with "
+"prices and ingredients."
+msgstr ""
+"منوی %(name)s را ببینید: قهوه، کیک، چای و دمنوش، همراه با قیمت و مواد."
+
+#: templates/coffee/base.html:20
+msgid "Our menu, opening hours and how to find us."
+msgstr "منو، ساعت کاری و نشانی ما."
+
+#: templates/coffee/base.html:31
+msgid "Skip to content"
+msgstr "رفتن به محتوا"
+
+#: templates/coffee/base.html:34
+msgid "Main"
+msgstr "اصلی"
+
+#: templates/coffee/base.html:43
+msgid "About"
+msgstr "درباره ما"
+
+#: templates/coffee/base.html:47
+msgid "Search the menu…"
+msgstr "جستجو در منو…"
+
+#: templates/coffee/base.html:47 templates/coffee/search.html:6
+msgid "Search the menu"
+msgstr "جستجو در منو"
+
+#: templates/coffee/base.html:72
+msgid "Find us"
+msgstr "نشانی ما"
+
+#: templates/coffee/base.html:73
+msgid "QR cards"
+msgstr "کارت‌های QR"
+
+#: templates/coffee/categories.html:3
+msgid "Our menu"
+msgstr "منوی ما"
+
+#: templates/coffee/categories.html:7
+msgid "← Home"
+msgstr "→ خانه"
+
+#: templates/coffee/categories.html:8
+msgid "Our Menu"
+msgstr "منوی ما"
+
+#: templates/coffee/categories.html:9
+msgid "Choose a category"
+msgstr "یک دسته را انتخاب کنید"
+
+#: templates/coffee/categories.html:16
+msgid "Barista's pick today"
+msgstr "پیشنهاد باریستا برای امروز"
+
+#: templates/coffee/categories.html:21
+msgid "View details"
+msgstr "مشاهدهٔ جزئیات"
+
+#: templates/coffee/categories.html:33
+#, python-format
+msgid "%(shown)s item"
+msgid_plural "%(shown)s items"
+msgstr[0] "%(shown)s مورد"
+msgstr[1] "%(shown)s مورد"
+
+#: templates/coffee/categories.html:33
+msgid "Coming soon"
+msgstr "به‌زودی"
+
+#: templates/coffee/category_detail.html:6
+msgid "← All categories"
+msgstr "→ همهٔ دسته‌ها"
+
+#: templates/coffee/category_detail.html:11
+msgid "Filter by diet"
+msgstr "فیلتر بر اساس رژیم"
+
+#: templates/coffee/category_detail.html:12
+msgid "All"
+msgstr "همه"
+
+#: templates/coffee/category_detail.html:21
+#, python-format
+msgid "Nothing matches this filter in %(name)s."
+msgstr "در «%(name)s» موردی با این فیلتر پیدا نشد."
+
+#: templates/coffee/category_detail.html:21
+msgid "Nothing here yet, check back soon."
+msgstr "هنوز چیزی اینجا نیست، به‌زودی سر بزنید."
+
+#: templates/coffee/search.html:3
+msgid "Search"
+msgstr "جستجو"
+
+#: templates/coffee/search.html:6
+#, python-format
+msgid "Results for “%(query)s”"
+msgstr "نتایج برای «%(query)s»"
+
+#: templates/coffee/search.html:7
+#, python-format
+msgid "%(shown)s item found"
+msgid_plural "%(shown)s items found"
+msgstr[0] "%(shown)s مورد پیدا شد"
+msgstr[1] "%(shown)s مورد پیدا شد"
+
+#: templates/coffee/search.html:11
+msgid "Browse by category"
+msgstr "مرور بر اساس دسته"
+
+#: templates/coffee/search.html:20
+msgid "Nothing found. Try another word, like “milk” or “mint”."
+msgstr "چیزی پیدا نشد. کلمهٔ دیگری امتحان کنید، مثلاً «شیر» یا «نعناع»."
+
+#: templates/coffee/search.html:20
+msgid "Type a drink, cake, or ingredient in the search box."
+msgstr "نام نوشیدنی، کیک یا یکی از مواد را در کادر جستجو بنویسید."
+
+#: templates/coffee/welcome.html:3
+msgid "Welcome"
+msgstr "خوش آمدید"
+
+#: templates/coffee/welcome.html:11
+msgid "Welcome to"
+msgstr "خوش آمدید به"
+
+#: templates/coffee/welcome.html:14
+msgid "Slow down, breathe, and enjoy something warm."
+msgstr "کمی آرام بگیرید، نفس بکشید و از یک نوشیدنی گرم لذت ببرید."
+
+#: templates/coffee/welcome.html:14
+msgid "We're closed for now. Have a look at the menu while you wait."
+msgstr "فعلاً بسته‌ایم. تا باز شدن، منو را ببینید."
+
+#: templates/coffee/welcome.html:17
+msgid "Explore the Menu"
+msgstr "دیدن منو"
+
+#: templates/coffee/welcome.html:24
+msgid "Opening hours and how to find us"
+msgstr "ساعت کاری و نشانی ما"
+
+#: templates/coffee/welcome.html:27
+msgid "OPEN"
+msgstr "باز"
+
+#: templates/coffee/welcome.html:30
+msgid "CLOSED"
+msgstr "بسته"

@@ -1,64 +1,65 @@
 {% extends "coffee/base.html" %}
-{% load static %}
-{% block title %}About us{% endblock %}
-{% block description %}Find {{ shop.name }}: address, opening hours, phone and social links.{% endblock %}
+{% load static i18n coffee_i18n %}
+{% block title %}{% trans "About us" %}{% endblock %}
+{% block description %}{% blocktrans with name=shop|tr:"name" %}Find {{ name }}: address, opening hours, phone and social links.{% endblocktrans %}{% endblock %}
 {% block content %}
 
 <!-- Banner -->
 <section class="about-hero">
   <div class="about-hero-overlay"></div>
   <div class="about-hero-text reveal">
-    <p class="eyebrow">Our story</p>
-    <h1>{{ shop.name }}</h1>
-    <p class="hero-sub">A little corner of the day to slow down.</p>
+    <p class="eyebrow">{% trans "Our story" %}</p>
+    <h1>{{ shop|tr:"name" }}</h1>
+    <p class="hero-sub">{% trans "A little corner of the day to slow down." %}</p>
     <span class="status {% if shop.is_open_now %}open{% else %}closed{% endif %}">
-      <span class="dot">●</span> {% if shop.is_open_now %}Open now{% else %}Closed right now{% endif %}
+      <span class="dot">●</span> {% if shop.is_open_now %}{% trans "Open now" %}{% else %}{% trans "Closed right now" %}{% endif %}
     </span>
   </div>
 </section>
 
 <!-- Quick actions -->
-<nav class="quick-actions reveal" aria-label="Quick actions">
+<nav class="quick-actions reveal" aria-label="{% trans "Quick actions" %}">
   {% if shop.phone %}
-  <a class="qa" href="tel:{{ shop.phone_link }}"><span class="qa-icon">📞</span> Call</a>
+  <a class="qa" href="tel:{{ shop.phone_link }}"><span class="qa-icon">📞</span> {% trans "Call" %}</a>
   {% endif %}
   {% if shop.address %}
   <a class="qa" target="_blank" rel="noopener"
-     href="https://www.google.com/maps/search/?api=1&query={{ shop.address|urlencode }}"><span class="qa-icon">📍</span> Directions</a>
+     href="https://www.google.com/maps/search/?api=1&query={{ shop|tr:"address"|urlencode }}"><span class="qa-icon">📍</span> {% trans "Directions" %}</a>
   {% endif %}
   {% if shop.instagram %}
   <a class="qa" href="{{ shop.instagram }}" target="_blank" rel="noopener">
-    <img src="{% static 'img/instagram.png' %}" alt=""> Instagram</a>
+    <img src="{% static 'img/instagram.png' %}" alt=""> {% trans "Instagram" %}</a>
   {% endif %}
   {% if shop.telegram %}
   <a class="qa" href="{{ shop.telegram }}" target="_blank" rel="noopener">
-    <img class="icon-mono" src="{% static 'img/delivery.png' %}" alt=""> Telegram</a>
+    <img class="icon-mono" src="{% static 'img/delivery.png' %}" alt=""> {% trans "Telegram" %}</a>
   {% endif %}
-  <a class="qa" href="{% url 'categories' %}"><span class="qa-icon">☕</span> Menu</a>
+  <a class="qa" href="{% url 'categories' %}"><span class="qa-icon">☕</span> {% trans "Menu" %}</a>
 </nav>
 
 <!-- Story -->
 <section class="story">
   <div class="story-photo reveal">
     <img src="{% if shop.photo %}{{ shop.photo.url }}{% else %}{% static 'img/hero-small.webp' %}{% endif %}"
-         alt="{{ shop.name }}">
+         alt="{{ shop|tr:"name" }}">
   </div>
   <div class="story-text reveal">
-    <h2>Welcome in</h2>
-    <p>{{ shop.story|default:"Fresh coffee, homemade cakes and a calm place to sit. Take your time, we're happy to have you."|linebreaksbr }}</p>
+    <h2>{% trans "Welcome in" %}</h2>
+    {% trans "Fresh coffee, homemade cakes and a calm place to sit. Take your time, we're happy to have you." as default_story %}
+    <p>{{ shop|tr:"story"|default:default_story|linebreaksbr }}</p>
   </div>
 </section>
 
 <!-- Highlights (edit the wording to fit your café) -->
 <section class="highlights">
-  <div class="highlight reveal"><span>☕</span><h3>Freshly brewed</h3><p>Every cup made to order, just for you.</p></div>
-  <div class="highlight reveal"><span>🍰</span><h3>Baked with care</h3><p>Cakes and sweets made from simple ingredients.</p></div>
-  <div class="highlight reveal"><span>🌿</span><h3>Cozy &amp; calm</h3><p>A quiet corner to read, work or catch up.</p></div>
+  <div class="highlight reveal"><span>☕</span><h3>{% trans "Freshly brewed" %}</h3><p>{% trans "Every cup made to order, just for you." %}</p></div>
+  <div class="highlight reveal"><span>🍰</span><h3>{% trans "Baked with care" %}</h3><p>{% trans "Cakes and sweets made from simple ingredients." %}</p></div>
+  <div class="highlight reveal"><span>🌿</span><h3>{% trans "Cozy &amp; calm" %}</h3><p>{% trans "A quiet corner to read, work or catch up." %}</p></div>
 </section>
 
 <!-- Visit -->
 <section class="visit">
-  <h2 class="section-title reveal">Come say hello</h2>
+  <h2 class="section-title reveal">{% trans "Come say hello" %}</h2>
   <div class="visit-grid">
 
     <div class="visit-card reveal">
@@ -66,8 +67,8 @@
       <div class="v-row">
         <div class="v-icon">📍</div>
         <div>
-          <div class="v-label">Address</div>
-          {{ shop.address }}
+          <div class="v-label">{% trans "Address" %}</div>
+          {{ shop|tr:"address" }}
         </div>
       </div>
       {% endif %}
@@ -76,8 +77,8 @@
       <div class="v-row">
         <div class="v-icon">📞</div>
         <div>
-          <div class="v-label">Phone</div>
-          <a href="tel:{{ shop.phone_link }}">{{ shop.phone }}</a>
+          <div class="v-label">{% trans "Phone" %}</div>
+          <a href="tel:{{ shop.phone_link }}" dir="ltr">{{ shop.phone|digits }}</a>
         </div>
       </div>
       {% endif %}
@@ -86,8 +87,8 @@
       <div class="v-row">
         <div class="v-icon">✉️</div>
         <div>
-          <div class="v-label">Email</div>
-          <a href="mailto:{{ shop.email }}">{{ shop.email }}</a>
+          <div class="v-label">{% trans "Email" %}</div>
+          <a href="mailto:{{ shop.email }}" dir="ltr">{{ shop.email }}</a>
         </div>
       </div>
       {% endif %}
@@ -95,12 +96,12 @@
       <div class="v-row">
         <div class="v-icon">🕘</div>
         <div>
-          <div class="v-label">Opening hours</div>
+          <div class="v-label">{% trans "Opening hours" %}</div>
           <strong>{{ shop.open_days_text }}</strong><br>
-          {% if shop.open_all_day %}Open 24 hours{% else %}{{ shop.open_time|time:"g:i A" }} – {{ shop.close_time|time:"g:i A" }}{% endif %}
+          {{ shop.hours_range_text }}
           <div class="v-badge">
-            {% if shop.is_open_now %}<span class="badge open">● Open now</span>
-            {% else %}<span class="badge closed">● Closed right now</span>{% endif %}
+            {% if shop.is_open_now %}<span class="badge open">● {% trans "Open now" %}</span>
+            {% else %}<span class="badge closed">● {% trans "Closed right now" %}</span>{% endif %}
           </div>
         </div>
       </div>
@@ -109,7 +110,7 @@
     {% if shop.map_embed_url %}
     <div class="visit-map reveal">
       <iframe src="{{ shop.map_embed_url }}" loading="lazy" allowfullscreen
-              referrerpolicy="no-referrer-when-downgrade" title="Map"></iframe>
+              referrerpolicy="no-referrer-when-downgrade" title="{% trans "Map" %}"></iframe>
     </div>
     {% endif %}
   </div>
@@ -117,9 +118,9 @@
 
 <!-- Closing call to action -->
 <section class="about-cta reveal">
-  <h2>Your table is waiting</h2>
-  <p>Have a look at what we're serving today.</p>
-  <a class="btn-solid" href="{% url 'categories' %}">Browse the menu</a>
+  <h2>{% trans "Your table is waiting" %}</h2>
+  <p>{% trans "Have a look at what we're serving today." %}</p>
+  <a class="btn-solid" href="{% url 'categories' %}">{% trans "Browse the menu" %}</a>
 </section>
 
 <script>
@@ -133,4 +134,4 @@
   }, { threshold: 0.15 });
   items.forEach(el => io.observe(el));
 </script>
-{% endblock %}
+{% endblock %}

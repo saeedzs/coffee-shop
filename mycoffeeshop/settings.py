@@ -54,6 +54,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',            # picks the language from the address
+    'coffee.middleware.EnglishAdminMiddleware',             # keeps /admin/ in English
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -71,6 +73,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'coffee.context_processors.site',
@@ -115,7 +118,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'          # language used when a visitor's browser does not say
+
+# The public site is available in English and Persian (addresses start with /en/ or /fa/)
+LANGUAGES = [
+    ('en', 'English'),
+    ('fa', 'فارسی'),
+]
 
 TIME_ZONE = 'Asia/Tehran'
 
@@ -133,8 +142,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'             # uploaded photos
 
 # Currency symbol shown before prices on the menu
-CURRENCY_SYMBOL = '$'
-
+CURRENCY_SYMBOL = 'T'
+CURRENCY_SYMBOL_FA = 'T'
+CURRENCY_SYMBOL_BEFORE = False
 # Extra protection when the site is live (DEBUG off)
 if not DEBUG:
     SECURE_SSL_REDIRECT = True

@@ -1,0 +1,23 @@
+﻿# Persian text still missing.
+# Fill in the empty parts after the | signs, keep one item per line, and save the file as UTF-8.
+# Format:   category | English name | Persian name | Persian description (optional)
+#           product  | English name | Persian name | Persian ingredients
+#           shop     | name / address / story | Persian text
+# Lines starting with # are only notes.
+
+
+# ---- Products ----
+product | Iced Tea |  | 
+# Iced drinks. English ingredients: Tea
+product | Cheesecake | چیزکیک | 
+# Cakes. English ingredients: New York-Styled Cheesecake
+product | Oreo Cheesecake |  | 
+# Cakes. English ingredients: No-Bake Oreo Cheesecake
+product | Chocolate Cheesecake |  | 
+# Cakes. English ingredients: No-baked Chocolate Cheesecake
+product | Peach Lemonade |  | 
+# Iced drinks. English ingredients: Homemade strawberry peach lemonade with real juice
+product | Mozzarella Panini |  | 
+# Snacks. English ingredients: Grilled cheese Italian panini
+product | French Fries | سیب‌زمینی سرخ‌کرده | 
+# Snacks. English ingredients: Crispy french fries

@@ -9,7 +9,7 @@ class WelcomeDoorSignTests(TestCase):
 
     def welcome_at(self, hour):
         with patch("coffee.models.timezone.localtime", return_value=datetime(2026, 10, 20, hour, 0)):
-            return self.client.get("/")
+            return self.client.get("/en/")
 
     def test_open_sign_says_until_when(self):
         r = self.welcome_at(12)
@@ -24,12 +24,12 @@ class WelcomeDoorSignTests(TestCase):
         self.assertContains(r, "Opens today at 9:00 AM")
 
     def test_sign_leads_to_the_about_page(self):
-        self.assertContains(self.welcome_at(12), 'href="/about/"')
+        self.assertContains(self.welcome_at(12), 'href="/en/about/"')
 
     def test_the_old_status_pill_is_gone_from_the_welcome_page(self):
         self.assertNotContains(self.welcome_at(12), 'class="status')
 
     def test_sign_is_only_on_the_welcome_page(self):
         with patch("coffee.models.timezone.localtime", return_value=datetime(2026, 10, 20, 12, 0)):
-            for url in ["/menu/", "/about/"]:
+            for url in ["/en/menu/", "/en/about/"]:
                 self.assertNotContains(self.client.get(url), "door-sign")

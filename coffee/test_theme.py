@@ -7,7 +7,7 @@ from django.test import TestCase
 class ThemeFollowsOpeningHoursTests(TestCase):
     """Default hours are 09:00-23:00 every day. 2026-10-20 is a Tuesday."""
 
-    def page_at(self, hour, url="/menu/"):
+    def page_at(self, hour, url="/en/menu/"):
         with patch("coffee.models.timezone.localtime", return_value=datetime(2026, 10, 20, hour, 0)):
             return self.client.get(url)
 
@@ -16,7 +16,7 @@ class ThemeFollowsOpeningHoursTests(TestCase):
         self.assertContains(self.page_at(3), 'data-theme="dark"')
 
     def test_every_kind_of_page_follows_the_same_rule(self):
-        for url in ["/", "/menu/", "/about/", "/search/"]:
+        for url in ["/en/", "/en/menu/", "/en/about/", "/en/search/"]:
             with self.subTest(url=url):
                 self.assertContains(self.page_at(2, url), 'data-theme="dark"')
                 self.assertContains(self.page_at(15, url), 'data-theme="light"')

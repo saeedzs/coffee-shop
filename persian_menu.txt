@@ -1,0 +1,12 @@
+﻿# Persian text for the items in persian_todo.txt
+# Load with:  python manage.py import_persian persian_menu.txt
+# Format:   product | English name | Persian name | Persian ingredients
+
+# ---- Products ----
+product | Iced Tea | آیس تی | چای
+product | Cheesecake | چیزکیک | چیزکیک به سبک نیویورکی
+product | Oreo Cheesecake | چیزکیک اوریو | چیزکیک اوریو بدون فر
+product | Chocolate Cheesecake | چیزکیک شکلاتی | چیزکیک شکلاتی بدون فر
+product | Peach Lemonade | لیموناد هلو | لیموناد خانگی توت‌فرنگی و هلو با آبمیوهٔ طبیعی
+product | Mozzarella Panini | پانینی موزارلا | پانینی ایتالیایی با پنیر گریل‌شده
+product | French Fries | سیب‌زمینی سرخ‌کرده | سیب‌زمینی سرخ‌کردهٔ ترد

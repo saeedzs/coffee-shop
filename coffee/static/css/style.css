@@ -69,8 +69,8 @@ img { max-width: 100%; }
 body::before {
   content: "";
   position: fixed; inset: 0; z-index: -1;
-  background: url("../img/hero.webp") center / cover no-repeat;
-  opacity: .25;                                 /* day mode: how visible the photo is (0 = hidden, .4 = strong) */
+  background: url("../img/beans.jpg") center / cover no-repeat;
+  opacity: .45;                                 /* day mode: how visible the photo is (0 = hidden, .4 = strong) */
   transition: opacity .4s;
 }
 :root[data-theme="dark"] body::before { opacity: .40; }
@@ -362,4 +362,15 @@ body::before {
 }
 @media (max-width: 800px) {
   :root[data-theme="dark"] .hero-overlay { background: linear-gradient(180deg, rgba(8,10,22,.8), rgba(10,12,26,.92)); }
+}
+/* Barista's pick: a warm honey-cream highlight instead of plain white */
+.pick {
+  background: linear-gradient(135deg, #eef8e8 0%, #d3ebc9 100%);
+  border: 1.5px solid #a9d19a;
+  box-shadow: 0 12px 30px rgba(70, 130, 60, .22);
+}
+:root[data-theme="dark"] .pick {                       /* evening: a dark warm tone with a gold edge */
+  background: linear-gradient(135deg, #3a2c1b 0%, #2d2216 100%);
+  border-color: #8a6a2f;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .4);
 }

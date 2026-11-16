@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Django: local data that should not be published
+db.sqlite3
+db.sqlite3-journal
+/media/
+/staticfiles/
+.env
+
+# Generated or temporary files
+persian_todo.txt
+*.rar
+*.zip
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
